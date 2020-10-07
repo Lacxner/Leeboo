@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.EmployeeMapper" >
+  <resultMap id="BaseResultMap" type="com.gzy.leeboo.entity.Employee" >
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="gender" property="gender"/>
+    <result column="birthday" property="birthday"/>
+    <result column="idCard" property="idCard"/>
+    <result column="wedlock" property="wedlock"/>
+    <result column="nativePlace" property="nativePlace"/>
+    <result column="email" property="email"/>
+    <result column="phone" property="phone"/>
+    <result column="address" property="address"/>
+    <result column="engageForm" property="engageForm"/>
+    <result column="tiptopDegree" property="tiptopDegree"/>
+    <result column="specialty" property="specialty"/>
+    <result column="school" property="school"/>
+    <result column="beginDate" property="beginDate"/>
+    <result column="workState" property="workState"/>
+    <result column="workID" property="workID"/>
+    <result column="contractTerm" property="contractTerm"/>
+    <result column="conversionDate" property="conversionDate"/>
+    <result column="beginContract" property="beginContract"/>
+    <result column="endContract" property="endContract"/>
+    <result column="workAge" property="workAge"/>
+    <association property="nation" javaType="com.gzy.leeboo.entity.Nation">
+      <id column="nId" property="id"/>
+      <result column="Nname" property="name"/>
+    </association>
+    <association property="politics" javaType="com.gzy.leeboo.entity.Politics">
+      <id column="pId" property="id"/>
+      <result column="pName" property="name"/>
+    </association>
+    <association property="department" javaType="com.gzy.leeboo.entity.Department">
+      <id column="dId" property="id"/>
+      <result column="dName" property="name"/>
+    </association>
+    <association property="rank" javaType="com.gzy.leeboo.entity.Rank">
+      <id column="rId" property="id"/>
+      <result column="rName" property="name"/>
+    </association>
+    <association property="position" javaType="com.gzy.leeboo.entity.Position">
+      <id column="posId" property="id"/>
+      <result column="posName" property="name"/>
+    </association>
+  </resultMap>
+
+  <sql id="BaseQuery">
+    SELECT
+      employee.*,
+      nation.`id` AS nId,
+      nation.`name` AS Nname,
+      politics.`id` AS pId,
+      politics.`name` AS pName,
+      department.`id` AS dId,
+      department.`name` AS dName,
+      rank.`id` AS rId,
+      rank.`name` AS rName,
+      position.`id` AS posId,
+      position.`name` AS posName
+    FROM
+      employee,
+      nation,
+      politics,
+      department,
+      rank,
+      position
+  </sql>
+
+  <!-- 根据id获取员工 -->
+  <select id="getEmployeeById" parameterType="integer" resultMap="BaseResultMap">
+    <include refid="BaseQuery"/>
+    WHERE
+        employee.`nationId` = nation.`id`
+        AND employee.`politicsId` = politics.`id`
+        AND employee.`departmentId` = department.`id`
+        AND employee.`rankId` = rank.`id`
+        AND employee.`positionId` = position.`id`
+        AND employee.`id` = #{id}
+  </select>
+
+  <!-- 获取所有员工 -->
+  <select id="getAllEmployees" parameterType="integer" resultMap="BaseResultMap">
+    <include refid="BaseQuery"/>
+    WHERE
+        employee.`nationId` = nation.`id`
+        AND employee.`politicsId` = politics.`id`
+        AND employee.`departmentId` = department.`id`
+        AND employee.`rankId` = rank.`id`
+        AND employee.`positionId` = position.`id`
+    ORDER BY
+			  employee.`id`
+  </select>
+
+  <!-- 高级搜索 -->
+  <select id="searchEmployees" parameterType="com.gzy.leeboo.dto.SearchEmployee" resultMap="BaseResultMap">
+    <include refid="BaseQuery"/>
+    <where>
+      employee.`nationId` = nation.`id`
+      AND employee.`politicsId` = politics.`id`
+      AND employee.`departmentId` = department.`id`
+      AND employee.`rankId` = rank.`id`
+      AND employee.`positionId` = position.`id`
+      <if test="name != null and name.trim() != ''">
+        <bind name="nameLike" value="'%' + name + '%'"/>
+        AND employee.`name` LIKE #{nameLike}
+      </if>
+      <if test="workID != null and workID.trim() != ''">
+        AND employee.`workID` = #{workID}
+      </if>
+      <if test="phone != null">
+        AND employee.`phone` = #{phone}
+      </if>
+      <if test="department.id != null">
+        AND employee.`departmentId` = #{department.id}
+      </if>
+      <if test="rank.id != null">
+        AND employee.`rankId` = #{rank.id}
+      </if>
+      <if test="position.id != null">
+        AND employee.`positionId` = #{position.id}
+      </if>
+      <if test="beginContract != null">
+        AND employee.`beginContract` >= #{beginContract}
+      </if>
+      <if test="endContract != null">
+        AND employee.`endContract` &lt;= #{endContract}
+      </if>
+    </where>
+    ORDER BY
+        employee.`id`
+  </select>
+
+  <!-- 获取最大工号 -->
+  <select id="getMaxWorkID" resultType="integer">
+    	SELECT
+        MAX(`workID`)
+      FROM
+        employee
+  </select>
+
+  <!-- 根据部门id获取相关联的员工数量 -->
+  <select id="getEmployeeCountsByDepartmentId" parameterType="integer" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee
+    WHERE
+        `departmentId` = #{departmentId}
+  </select>
+
+  <!-- 根据部门id的集合获取相关联的员工数量 -->
+  <select id="getEmployeeCountsByDepartmentIds" parameterType="list" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee
+    WHERE
+        `departmentId` IN
+    <foreach collection="list" item="departmentId" open="(" separator="," close=")">
+        #{departmentId}
+    </foreach>
+  </select>
+
+  <!-- 根据职位id获取相关联的员工数量 -->
+  <select id="getEmployeeCountsByPositionId" parameterType="integer" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee
+    WHERE
+        `positionId` = #{positionId}
+  </select>
+
+  <!-- 根据职位id的集合获取相关联的员工数量 -->
+  <select id="getEmployeeCountsByPositionIds" parameterType="list" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee
+    WHERE
+        `positionId` IN
+    <foreach collection="list" item="positionId" open="(" separator="," close=")">
+        #{positionId}
+    </foreach>
+  </select>
+
+  <!-- 根据职称id获取相关联的员工数量 -->
+  <select id="getEmployeeCountsByRankId" parameterType="integer" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee
+    WHERE
+        `rankId` = #{rankId}
+  </select>
+
+  <!-- 根据职称id的集合获取相关联的员工数量 -->
+  <select id="getEmployeeCountsByRankIds" parameterType="list" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee
+    WHERE
+        `rankId` IN
+    <foreach collection="list" item="rankId" open="(" separator="," close=")">
+        #{rankId}
+    </foreach>
+  </select>
+
+  <!-- 根据工资账套id获取相关联的员工数量 -->
+  <select id="getEmployeeCountsBySalaryId" parameterType="integer" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee_salary
+    WHERE
+        `sId` = #{salaryId}
+  </select>
+
+  <!-- 根据工资账套id的集合获取相关联的员工数量 -->
+  <select id="getEmployeeCountsBySalaryIds" parameterType="list" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee_salary
+    WHERE
+        `sId` IN
+    <foreach collection="list" item="salaryId" open="(" separator="," close=")">
+        #{salaryId}
+    </foreach>
+  </select>
+
+  <!-- 添加员工 -->
+  <insert id="addEmployee" parameterType="com.gzy.leeboo.entity.Employee" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    INSERT INTO
+        `employee`(`name`, `gender`, `birthday`, `idCard`, `wedlock`, `nationId`, `nativePlace`, `politicsId`, `email`,
+          `phone`, `address`, `departmentId`, `rankId`, `positionId`, `engageForm`, `tiptopDegree`, `specialty`, `school`,
+          `beginDate`, `workState`, `workID`, `contractTerm`, `conversionDate`, `beginContract`, `endContract`, `workAge`)
+    VALUES(#{name}, #{gender}, #{birthday}, #{idCard}, #{wedlock}, #{nation.id}, #{nativePlace}, #{politics.id}, #{email},
+          #{phone}, #{address}, #{department.id}, #{rank.id}, #{position.id}, #{engageForm}, #{tiptopDegree}, #{specialty}, #{school},
+          #{beginDate}, #{workState}, #{workID}, #{contractTerm}, #{conversionDate}, #{beginContract}, #{endContract}, #{workAge})
+  </insert>
+
+  <!-- 批量添加员工 -->
+  <insert id="addBatchEmployees" parameterType="list" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    INSERT INTO
+        `employee`(`name`, `gender`, `birthday`, `idCard`, `wedlock`, `nationId`, `nativePlace`, `politicsId`, `email`,
+          `phone`, `address`, `departmentId`, `rankId`, `positionId`, `engageForm`, `tiptopDegree`, `specialty`, `school`,
+          `beginDate`, `workState`, `workID`, `contractTerm`, `conversionDate`, `beginContract`, `endContract`, `workAge`)
+    VALUES
+    <foreach collection="list" item="employee" separator=",">
+        (#{employee.name}, #{employee.gender}, #{employee.birthday}, #{employee.idCard}, #{employee.wedlock}, #{employee.nation.id}, #{employee.nativePlace}, #{employee.politics.id}, #{employee.email},
+        #{employee.phone}, #{employee.address}, #{employee.department.id}, #{employee.rank.id}, #{employee.position.id}, #{employee.engageForm}, #{employee.tiptopDegree}, #{employee.specialty}, #{employee.school},
+        #{employee.beginDate}, #{employee.workState}, #{employee.workID}, #{employee.contractTerm}, #{employee.conversionDate}, #{employee.beginContract}, #{employee.endContract}, #{employee.workAge})
+    </foreach>
+  </insert>
+
+  <!-- 修改员工 -->
+  <update id="updateEmployee" parameterType="com.gzy.leeboo.entity.Employee" >
+    UPDATE
+        employee
+    <set >
+      <if test="name != null and name.trim() != ''">
+        `name` = #{name},
+      </if>
+      <if test="gender != null and gender.trim() != ''">
+        `gender` = #{gender},
+      </if>
+      <if test="birthday != null">
+        `birthday` = #{birthday},
+      </if>
+      <if test="idCard != null and idCard.trim() != ''">
+        `idCard` = #{idCard},
+      </if>
+      <if test="nation.id != null">
+        `nationId` = #{nation.id},
+      </if>
+      <if test="nativePlace != null and nativePlace.trim() != ''">
+        `nativePlace` = #{nativePlace},
+      </if>
+      <if test="politics.id != null">
+        `politicsId` = #{politics.id},
+      </if>
+      <if test="wedlock != null and wedlock.trim() != ''">
+        `wedlock` = #{wedlock},
+      </if>
+      <if test="email != null and email.trim() != ''">
+        `email` = #{email},
+      </if>
+      <if test="phone != null and phone.trim() != ''">
+        `phone` = #{phone},
+      </if>
+      <if test="address != null and address.trim() != ''">
+        `address` = #{address},
+      </if>
+      <if test="department.id != null">
+        `departmentId` = #{department.id},
+      </if>
+      <if test="rank.id != null">
+        `rankId` = #{rank.id},
+      </if>
+      <if test="position.id != null">
+        `positionId` = #{position.id},
+      </if>
+      <if test="engageForm != null and engageForm.trim() != ''">
+        `engageForm` = #{engageForm},
+      </if>
+      <if test="tiptopDegree != null and tiptopDegree.trim() != ''">
+        `tiptopDegree` = #{tiptopDegree},
+      </if>
+      <if test="school != null and school.trim() != ''">
+        `school` = #{school},
+      </if>
+      <if test="specialty != null and specialty.trim() != ''">
+        `specialty` = #{specialty},
+      </if>
+      <if test="workID != null and workID.trim() != ''">
+        `workID` = #{workID},
+      </if>
+      <if test="workState != null and workState.trim() != ''">
+        `workState` = #{workState},
+      </if>
+      <if test="beginDate != null">
+        `beginDate` = #{beginDate},
+      </if>
+      <if test="conversionDate != null">
+        `conversionDate` = #{conversionDate},
+      </if>
+      <if test="beginContract != null">
+        `beginContract` = #{beginContract},
+      </if>
+      <if test="contractTerm != null">
+        `contractTerm` = #{contractTerm},
+      </if>
+      <if test="endContract != null">
+        `endContract` = #{endContract},
+      </if>
+      <if test="workAge != null">
+        `workAge` = #{workAge},
+      </if>
+    </set>
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 根据id删除员工 -->
+  <delete id="deleteEmployeeById" parameterType="integer" >
+    DELETE FROM
+        employee
+    WHERE
+        `id` = #{id}
+  </delete>
+
+  <!-- 根据id批量删除员工 -->
+  <delete id="deleteBatchEmployeeByIds" parameterType="list" >
+    DELETE FROM
+    employee
+    WHERE
+    `id` IN
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+      #{id}
+    </foreach>
+  </delete>
+</mapper>

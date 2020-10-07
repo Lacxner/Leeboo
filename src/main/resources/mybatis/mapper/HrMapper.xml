@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.HrMapper" >
+  <resultMap id="HrWithRolesResultMap" type="com.gzy.leeboo.entity.Hr">
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="phone" property="phone"/>
+    <result column="qq" property="qq"/>
+    <result column="address" property="address"/>
+    <result column="enabled" property="enabled"/>
+    <result column="username" property="username"/>
+    <result column="password" property="password"/>
+    <result column="avatar" property="avatar"/>
+    <result column="remark" property="remark"/>
+    <result column="createTime" property="createTime"/>
+    <collection property="roles" javaType="arrayList" ofType="com.gzy.leeboo.entity.Role">
+      <id column="rId" property="id"/>
+      <result column="rName" property="name"/>
+      <result column="nameZh" property="nameZh"/>
+      <result column="createTime" property="createTime"/>
+    </collection>
+  </resultMap>
+  
+  <resultMap id="AllRolesResultMap" type="com.gzy.leeboo.dto.BasicHr">
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="phone" property="phone"/>
+    <result column="qq" property="qq"/>
+    <result column="address" property="address"/>
+    <result column="enabled" property="enabled"/>
+    <result column="avatar" property="avatar"/>
+    <result column="remark" property="remark"/>
+    <result column="createTime" property="createTime"/>
+    <collection property="roles" javaType="arrayList" ofType="com.gzy.leeboo.entity.Role">
+      <id column="rId" property="id"/>
+      <result column="rName" property="name"/>
+      <result column="nameZh" property="nameZh"/>
+    </collection>
+  </resultMap>
+
+  <!-- 根据用户名获取Hr -->
+  <select id="getHrByUsername" parameterType="string" resultMap="HrWithRolesResultMap">
+    SELECT
+      hr.*,
+      role.`id` AS rId,
+      role.`name` AS rName,
+      role.`nameZh`,
+      role.`createTime`
+    FROM
+      hr,
+      hr_role,
+      role
+    WHERE
+        hr.`id` = hr_role.`hrId`
+      AND
+        hr_role.`rId` = role.`id`
+      AND
+        hr.`username` = #{username}
+  </select>
+
+  <!-- 获取除自己以外的所有Hr -->
+  <select id="getAllHrsWithoutMyself" parameterType="integer" resultType="com.gzy.leeboo.dto.ChatHr">
+    SELECT
+        *
+    FROM
+        hr
+    WHERE
+        `id` != #{id}
+  </select>
+
+  <!-- 获取所有Hr -->
+  <select id="getAllHrs" resultMap="AllRolesResultMap">
+    SELECT
+        hr.`id`,
+        hr.`name`,
+        hr.`phone`,
+        hr.`qq`,
+        hr.`address`,
+        hr.`enabled`,
+        hr.`avatar`,
+        hr.`remark`,
+        hr.`createTime`,
+        role.`id` AS rId,
+        role.`name` AS rName,
+        role.`nameZh`
+    FROM
+        hr
+        LEFT JOIN hr_role ON hr.`id` = hr_role.`hrId`
+        LEFT JOIN role ON role.`id` = hr_role.`rId`
+  </select>
+
+  <!-- 根据角色id获取相关联的用户数量 -->
+  <select id="getHrCountsByRoleId" parameterType="integer" resultType="integer">
+    SELECT
+      COUNT(1)
+    FROM
+      hr_role
+    WHERE
+      `rId` = #{roleId}
+  </select>
+
+  <!-- 根据角色id的集合获取相关联的用户数量 -->
+  <select id="getHrCountsByRoleIds" parameterType="list" resultType="integer">
+    SELECT
+      COUNT(1)
+    FROM
+      hr_role
+    WHERE
+      `rId` IN
+    <foreach collection="list" item="roleId" open="(" separator="," close=")">
+      #{roleId}
+    </foreach>
+  </select>
+
+  <!-- 添加Hr -->
+  <insert id="addHr" parameterType="com.gzy.leeboo.dto.AuthenticateHr">
+    INSERT INTO
+        `hr`(`name`, `username`, `password`, `remark`)
+    VALUES(#{name}, #{username}, #{password}, #{remark})
+  </insert>
+
+  <!-- 修改Hr -->
+  <update id="updateHr" parameterType="com.gzy.leeboo.entity.Hr">
+    UPDATE
+        hr
+    <set>
+      <if test="name != null and name.trim() != ''">
+        `name` = #{name},
+      </if>
+      <if test="phone != null and phone.trim() != ''">
+        `phone` = #{phone},
+      </if>
+      <if test="qq != null and qq.trim() != ''">
+        `qq` = #{qq},
+      </if>
+      <if test="address != null and address.trim() != ''">
+        `address` = #{address},
+      </if>
+      <if test="remark != null and remark.trim() != ''">
+        `remark` = #{remark},
+      </if>
+    </set>
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 由管理员修改密码 -->
+  <update id="updateHrPasswordByAdmin" parameterType="com.gzy.leeboo.dto.ResetPassword">
+    UPDATE
+        hr
+    SET
+        `password` = #{password}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 修改Hr是否启用 -->
+  <update id="updateHrEnabled" parameterType="com.gzy.leeboo.dto.BasicHr">
+    UPDATE
+        hr
+    SET
+        `enabled` = #{enabled}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 根据id删除Hr -->
+  <delete id="deleteHrById" parameterType="integer">
+    DELETE FROM
+        hr
+    WHERE
+        `id` = #{id}
+  </delete>
+</mapper>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.SystemLogMapper">
+  <!-- 获取所有的系统日志 -->
+  <select id="getAllSystemLogs" parameterType="string" resultType="com.gzy.leeboo.entity.SystemLog">
+    SELECT
+        *
+    FROM
+        system_log
+    <if test="username != null and username.trim() != ''">
+      <bind name="usernameLike" value="'%' + username + '%'"/>
+      WHERE
+        `username` LIKE #{usernameLike}
+    </if>
+  </select>
+
+  <!-- 添加系统日志 -->
+  <insert id="addSystemLog" parameterType="com.gzy.leeboo.entity.SystemLog">
+    INSERT INTO
+        `system_log`(`method`, `pattern`, `url`, `username`, `ip`, `visitTime`, `executionTime`)
+    VALUES(#{method}, #{pattern}, #{url}, #{username}, #{ip}, #{visitTime}, #{executionTime})
+  </insert>
+
+  <!-- 清空所有日志 -->
+  <delete id="deleteAllSystemLogs">
+    TRUNCATE TABLE system_log
+  </delete>
+</mapper>

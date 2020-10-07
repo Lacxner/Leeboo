@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.RoleMapper" >
+  <!-- 获取所有角色 -->
+  <select id="getAllRoles" resultType="com.gzy.leeboo.entity.Role">
+    SELECT
+        *
+    FROM
+        role
+  </select>
+  
+  <!-- 添加角色 -->
+  <insert id="addRole" parameterType="com.gzy.leeboo.entity.Role" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
+    INSERT INTO
+        `role`(`name`, `nameZh`)
+    VALUES(#{name}, #{nameZh})
+  </insert>
+
+  <!-- 为Hr添加角色 -->
+  <insert id="addHrRole" parameterType="com.gzy.leeboo.dto.UpdateHrRole">
+    INSERT INTO
+        `hr_role`(`hrId`, `rId`)
+      VALUES
+      <foreach collection="roleIds" item="roleId" separator=",">
+        (#{hrId}, #{roleId})
+      </foreach>
+  </insert>
+
+  <!-- 修改角色 -->
+  <update id="updateRole" parameterType="com.gzy.leeboo.entity.Role" >
+    UPDATE
+        role
+    <set >
+      <if test="name != null and name.trim() != ''">
+        `name` = #{name},
+      </if>
+      <if test="nameZh != null and nameZh.trim() != ''">
+        `nameZh` = #{nameZh},
+      </if>
+    </set>
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 根据Hr的id删除其所有拥有的角色 -->
+  <delete id="deleteAllHrRolesByHrId" parameterType="list">
+    DELETE FROM
+      hr_role
+    WHERE
+      `hrId` = #{hrId}
+  </delete>
+
+  <!-- 根据id删除角色 -->
+  <delete id="deleteRoleById" parameterType="integer">
+    DELETE FROM
+        role
+    WHERE
+        `id` = #{id}
+  </delete>
+
+  <!-- 根据id批量删除角色 -->
+  <delete id="deleteBatchRoleByIds" parameterType="list">
+    DELETE FROM
+        role
+    WHERE
+        `id` IN
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+  </delete>
+</mapper>

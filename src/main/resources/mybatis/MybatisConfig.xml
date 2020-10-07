@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!-- 开启驼峰命名映射 -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+        <!-- 开启Spring Boot的缓存 -->
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="cacheEnabled" value="true"/>
+    </settings>
+</configuration>

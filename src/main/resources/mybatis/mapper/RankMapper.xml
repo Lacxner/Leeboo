@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.RankMapper" >
+  <!-- 获取所有职称 -->
+  <select id="getAllRanks" resultType="com.gzy.leeboo.entity.Rank">
+    SELECT
+        *
+    FROM
+        rank
+  </select>
+
+  <!-- 根据id删除职称 -->
+  <delete id="deleteRankById" parameterType="integer">
+    DELETE FROM
+        rank
+    WHERE
+        `id` = #{id}
+  </delete>
+
+  <!-- 根据id批量删除职称 -->
+  <delete id="deleteBatchRankByIds" parameterType="list">
+    DELETE FROM
+        rank
+    WHERE
+        `id` IN
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+  </delete>
+
+  <!-- 添加职称 -->
+  <insert id="addRank" parameterType="com.gzy.leeboo.entity.Rank">
+    INSERT INTO
+        `rank`(`name`, `level`)
+    VALUES(#{name}, #{level})
+  </insert>
+
+  <!-- 修改职称 -->
+  <update id="updateRank" parameterType="com.gzy.leeboo.entity.Rank">
+    UPDATE
+        rank
+    <set >
+      <if test="name != null and name.trim() != ''">
+        `name` = #{name},
+      </if>
+      <if test="level != null">
+        `level` = #{level}
+      </if>
+    </set>
+    WHERE
+        id = #{id}
+  </update>
+
+  <!-- 修改职称是否可用 -->
+  <update id="updateRankEnabled" parameterType="com.gzy.leeboo.entity.Rank">
+    UPDATE
+        rank
+    SET
+        `enabled` = #{enabled}
+    WHERE
+        id = #{id}
+  </update>
+</mapper>

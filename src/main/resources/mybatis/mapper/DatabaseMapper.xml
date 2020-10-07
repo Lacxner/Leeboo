@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.DatabaseMapper">
+  <!-- 获取数据库信息 -->
+  <select id="getDatabase" resultType="com.gzy.leeboo.entity.Database">
+    SELECT
+        *
+    FROM
+        `database`
+  </select>
+
+  <!-- 修改数据库信息 -->
+  <update id="updateDatabase" parameterType="com.gzy.leeboo.entity.Database">
+    UPDATE
+        `database`
+    <set>
+      <if test="lastBackupTime != null">
+        `lastBackupTime` = #{lastBackupTime},
+      </if>
+      <if test="lastRestoreTime != null">
+        `lastRestoreTime` = #{lastRestoreTime}
+      </if>
+    </set>
+  </update>
+</mapper>

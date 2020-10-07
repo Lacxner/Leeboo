@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.DepartmentMapper" >
+  <resultMap id="AllDepartmentsResultMap" type="com.gzy.leeboo.entity.Department" >
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="parentId" property="parentId"/>
+    <result column="path" property="path"/>
+    <result column="enabled" property="enabled"/>
+    <result column="isParent" property="isParent"/>
+    <collection property="children" select="getAllDepartmentsByParentId" javaType="list" ofType="com.gzy.leeboo.entity.Department" column="id"/>
+  </resultMap>
+
+  <!-- 根据父id获取部门 -->
+  <select id="getAllDepartmentsByParentId" parameterType="integer" resultMap="AllDepartmentsResultMap">
+    SELECT
+        *
+    FROM
+        department
+    WHERE
+        `parentId` = #{parentId}
+  </select>
+
+  <!-- 获取所有部门，但并构造父子关系 -->
+  <select id="getAllBasicDepartments" resultType="com.gzy.leeboo.entity.Department">
+    SELECT
+        `id`,
+        `name`
+    FROM
+        department
+  </select>
+
+  <!-- 根据id获取该部门的路径 -->
+  <select id="getPathById" parameterType="integer" resultType="string">
+    SELECT
+        `path`
+    FROM
+        department
+    WHERE
+        `id` = #{id}
+  </select>
+
+  <!-- 根据id获取该部门所有子部门的数量 -->
+  <select id="getSubDeparmentCountsById" parameterType="integer" resultType="integer">
+    SELECT
+        COUNT(`id`)
+    FROM
+        department
+    WHERE
+        `parentId` = #{id}
+  </select>
+
+  <!-- 添加部门（只添加部门名称和父id） -->
+  <insert id="addDepartment" parameterType="com.gzy.leeboo.entity.Department" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
+    INSERT INTO
+        `department`(`name`, `parentId`)
+    VALUES(#{name}, #{parentId})
+  </insert>
+
+  <!-- 更新部门的路径 -->
+  <update id="updateDepartmentPath" parameterType="com.gzy.leeboo.entity.Department">
+    UPDATE
+        department
+    SET
+        `path` = #{path}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 根据父id设置父部门的isParent属性 -->
+  <update id="updateDepartmentIsParent">
+    UPDATE
+        department
+    SET
+        `isParent` = #{isParent}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 根据id删除部门 -->
+  <delete id="deleteDepartmentById" parameterType="integer">
+    DELETE FROM
+        department
+    WHERE
+        `id` = #{id}
+  </delete>
+
+  <!-- 根据id批量删除部门 -->
+  <delete id="deleteBatchDepartmentByIds" parameterType="list">
+    DELETE FROM
+        department
+    WHERE
+        `id` IN
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+  </delete>
+</mapper>

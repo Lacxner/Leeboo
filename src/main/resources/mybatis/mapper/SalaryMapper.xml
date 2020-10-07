@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.SalaryMapper" >
+  <resultMap id="EmployeeSalaryResultMap" type="com.gzy.leeboo.dto.EmployeeSalary">
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="workID" property="workID"/>
+    <result column="email" property="email"/>
+    <result column="phone" property="phone"/>
+    <association property="department" javaType="com.gzy.leeboo.entity.Department">
+      <result column="dName" property="name"/>
+    </association>
+    <association property="salary" javaType="com.gzy.leeboo.entity.Salary">
+      <id column="sId" property="id"/>
+      <result column="sName" property="name"/>
+      <result column="basicSalary" property="basicSalary"/>
+      <result column="bonus" property="bonus"/>
+      <result column="lunchSalary" property="lunchSalary"/>
+      <result column="trafficSalary" property="trafficSalary"/>
+      <result column="allSalary" property="allSalary"/>
+      <result column="pensionBase" property="pensionBase"/>
+      <result column="pensionPer" property="pensionPer"/>
+      <result column="medicalBase" property="medicalBase"/>
+      <result column="medicalPer" property="medicalPer"/>
+      <result column="accumulationFundBase" property="accumulationFundBase"/>
+      <result column="accumulationFundPer" property="accumulationFundPer"/>
+    </association>
+  </resultMap>
+
+  <!-- 获取所有的工资账套 -->
+  <select id="getAllSalary" resultType="com.gzy.leeboo.entity.Salary">
+    SELECT
+        *
+    FROM
+        salary
+  </select>
+
+  <!-- 获取所有工资账套基础信息 -->
+  <select id="getAllBasicSalary" resultType="com.gzy.leeboo.dto.BasicSalary">
+    SELECT
+        `id`,
+        `name`
+    FROM
+        salary
+  </select>
+
+  <!-- 获取所有的员工及其工资套账 -->
+  <select id="getAllEmployeeSalary" resultMap="EmployeeSalaryResultMap">
+    SELECT
+        e.`id`,
+        e.`name`,
+        e.`workID`,
+        e.`email`,
+        e.`phone`,
+        d.`name` AS dName,
+        s.`id` AS sId,
+        s.`name` AS sName,
+        s.`basicSalary`,
+        s.`bonus`,
+        s.`lunchSalary`,
+        s.`trafficSalary`,
+        s.`allSalary`,
+        s.`pensionBase`,
+        s.`pensionPer`,
+        s.`medicalBase`,
+        s.`medicalPer`,
+        s.`accumulationFundBase`,
+        s.`accumulationFundPer`
+    FROM
+        employee AS e
+    LEFT JOIN
+        department AS d
+    ON
+        e.`departmentId` = d.`id`
+    LEFT JOIN
+        employee_salary AS es
+    ON
+        e.`id` = es.`eId`
+    LEFT JOIN
+        salary AS s
+    ON
+        s.`id` = es.`sId`
+  </select>
+
+  <!-- 根据id删除工资账套 -->
+  <delete id="deleteSalaryById" parameterType="integer" >
+    DELETE FROM
+        salary
+    WHERE
+        `id` = #{id}
+  </delete>
+
+  <!-- 根据id批量删除工资账套 -->
+  <delete id="deleteBatchSalaryByIds" parameterType="list">
+    DELETE FROM
+        salary
+    WHERE
+        `id` IN
+    <foreach collection="list" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+  </delete>
+
+  <!-- 添加工资账套 -->
+  <insert id="addSalary" parameterType="com.gzy.leeboo.entity.Salary" >
+    INSERT INTO
+    `salary`(`name`, `basicSalary`, `bonus`, `lunchSalary`, `trafficSalary`, `allSalary`, `pensionBase`, `pensionPer`, `medicalBase`,
+      `medicalPer`, `accumulationFundBase`, `accumulationFundPer`)
+    VALUES (#{name}, #{basicSalary}, #{bonus}, #{lunchSalary}, #{trafficSalary}, #{allSalary}, #{pensionBase}, #{pensionPer}, #{medicalBase},
+      #{medicalPer}, #{accumulationFundBase},  #{accumulationFundPer})
+  </insert>
+
+  <!-- 修改工资账套 -->
+  <update id="updateSalary" parameterType="com.gzy.leeboo.entity.Salary" >
+    UPDATE
+        salary
+    <set >
+      <if test="name != null and name.trim() != ''" >
+        `name` = #{name},
+      </if>
+      <if test="basicSalary != null" >
+        `basicSalary` = #{basicSalary},
+      </if>
+      <if test="bonus != null" >
+        `bonus` = #{bonus},
+      </if>
+      <if test="lunchSalary != null" >
+        `lunchSalary` = #{lunchSalary},
+      </if>
+      <if test="trafficSalary != null" >
+        `trafficSalary` = #{trafficSalary},
+      </if>
+      <if test="allSalary != null" >
+        `allSalary` = #{allSalary},
+      </if>
+      <if test="pensionBase != null" >
+        `pensionBase` = #{pensionBase},
+      </if>
+      <if test="pensionPer != null" >
+        `pensionPer` = #{pensionPer},
+      </if>
+      <if test="medicalBase != null" >
+        `medicalBase` = #{medicalBase},
+      </if>
+      <if test="medicalPer != null" >
+        `medicalPer` = #{medicalPer},
+      </if>
+      <if test="accumulationFundBase != null" >
+        `accumulationFundBase` = #{accumulationFundBase},
+      </if>
+      <if test="accumulationFundPer != null" >
+        `accumulationFundPer` = #{accumulationFundPer},
+      </if>
+      <if test="createTime != null" >
+        `createTime` = #{createTime}
+      </if>
+    </set>
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 修改员工的工资账套 -->
+  <update id="updateEmployeeSalary">
+    UPDATE
+      employee_salary
+    SET
+      `sId` = #{salaryId}
+    WHERE
+      `eId` = #{employeeId}
+  </update>
+</mapper>
