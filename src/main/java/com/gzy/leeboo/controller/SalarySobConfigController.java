@@ -12,7 +12,7 @@ import java.util.List;
 
 @RequestMapping("/salary/setOfBooksConfig")
 @RestController
-public class SalarySetOfBooksConfigController {
+public class SalarySobConfigController {
     private SalaryService salaryService;
 
     @Autowired
@@ -20,10 +20,13 @@ public class SalarySetOfBooksConfigController {
         this.salaryService = salaryService;
     }
 
-    @GetMapping("/getAllEmployeeSalary/{currentPage}/{pageSize}")
-    public Result getAllEmployeeSalary(@PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize) {
+    @GetMapping("/getAllEmployeeSalaryByName/{name}/{currentPage}/{pageSize}")
+    public Result getAllEmployeeSalaryByName(@PathVariable("name") String name, @PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize) {
+        if ("null".equals(name)) {
+            name = null;
+        }
         Page<EmployeeSalary> page = PageHelper.startPage(currentPage, pageSize, true, true, true);
-        List<EmployeeSalary> allEmployeeSalary = salaryService.getAllEmployeeSalary();
+        List<EmployeeSalary> allEmployeeSalary = salaryService.getAllEmployeeSalaryByName(name);
         Long total = page.getTotal();
         return Result.success().data("items", allEmployeeSalary).data("total", total);
     }
@@ -36,5 +39,10 @@ public class SalarySetOfBooksConfigController {
     @PutMapping("/updateEmployeeSalary/{salaryId}/{employeeId}")
     public Result updateEmployeeSalary(@PathVariable("salaryId") Integer salaryId, @PathVariable("employeeId") Integer employeeId) {
         return salaryService.updateEmployeeSalary(salaryId, employeeId) ? Result.success().message("修改成功！") : Result.failure().message("修改失败！");
+    }
+
+    @PostMapping("/addEmployeeSalary/{salaryId}/{employeeId}")
+    public Result addEmployeeSalary(@PathVariable("salaryId") Integer salaryId, @PathVariable("employeeId") Integer employeeId) {
+        return salaryService.addEmployeeSalary(salaryId, employeeId) ? Result.success().message("添加成功！") : Result.failure().message("添加失败！");
     }
 }

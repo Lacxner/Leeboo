@@ -23,16 +23,13 @@ public class MenuController {
     }
 
     @GetMapping("/getAllMenus")
-    public Result getAllMenuByHrId(){
+    public Result getAllMenus(){
         // 获取当前上下文中认证的用户信息，为了安全使用服务器内部的相关用户信息
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof Hr) {
-                Hr hr = (Hr) principal;
-                List<Menu> allMenu = menuService.getAllMenuByHrId(hr.getId());
-                return Result.success().data("items", allMenu);
-            }
+            Hr hr = (Hr) authentication.getPrincipal();
+            List<Menu> allMenu = menuService.getAllMenuByHrId(hr.getId());
+            return Result.success().data("items", allMenu);
         }
         return Result.failure().code(401).message("您尚未登录！");
     }

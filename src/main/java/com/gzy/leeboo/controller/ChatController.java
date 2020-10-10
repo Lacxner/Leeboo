@@ -35,11 +35,8 @@ public class ChatController {
         // 获取当前Hr
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-            Object principal = authentication.getPrincipal();
-            if (principal instanceof Hr) {
-                Hr hr = (Hr) principal;
-                return Result.success().data("items", hrService.getAllHrsWithoutMyself(hr.getId()));
-            }
+            Hr hr = (Hr) authentication.getPrincipal();
+            return Result.success().data("items", hrService.getAllHrsWithoutMyself(hr.getId()));
         }
         return Result.failure().code(401).message("您尚未登录！");
     }

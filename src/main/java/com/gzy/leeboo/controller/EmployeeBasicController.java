@@ -117,8 +117,8 @@ public class EmployeeBasicController {
      * @return 上传结果
      */
     @PostMapping("/upload")
-    public void upload(MultipartFile file) throws FileNotFoundException {
-        if (file.equals("") || file.getSize() <= 0) {
+    public void upload(@RequestParam("file") MultipartFile file) throws FileNotFoundException {
+        if ("".equals(file) || file.getSize() <= 0) {
             throw new FileNotFoundException();
         }
         employeeService.upload(file);

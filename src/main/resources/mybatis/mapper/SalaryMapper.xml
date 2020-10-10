@@ -44,8 +44,24 @@
         salary
   </select>
 
+  <!-- 根据名称获取指定员工的工资表信息 -->
+  <select id="getSalaryByName" parameterType="string" resultType="com.gzy.leeboo.entity.Salary">
+    SELECT
+        s.*
+    FROM
+        salary AS s,
+        employee_salary AS es,
+        employee AS e
+    WHERE
+        e.`id` = es.`eId`
+        AND
+        s.`id` = es.`sId`
+        AND
+        e.`name` = #{name}
+  </select>
+
   <!-- 获取所有的员工及其工资套账 -->
-  <select id="getAllEmployeeSalary" resultMap="EmployeeSalaryResultMap">
+  <select id="getAllEmployeeSalaryByName" parameterType="string" resultMap="EmployeeSalaryResultMap">
     SELECT
         e.`id`,
         e.`name`,
@@ -80,6 +96,11 @@
         salary AS s
     ON
         s.`id` = es.`sId`
+    <if test="name != null and name.trim() != ''">
+      WHERE
+        e.`name` = #{name}
+    </if>
+    ORDER BY `id`
   </select>
 
   <!-- 根据id删除工资账套 -->
@@ -168,4 +189,11 @@
     WHERE
       `eId` = #{employeeId}
   </update>
+
+  <!-- 为员工添加工资账套 -->
+  <insert id="addEmployeeSalary">
+    INSERT INTO
+        `employee_salary`(`eId`, `sId`)
+    VALUES(#{employeeId}, #{salaryId})
+  </insert>
 </mapper>

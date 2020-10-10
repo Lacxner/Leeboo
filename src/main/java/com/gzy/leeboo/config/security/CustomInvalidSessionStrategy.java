@@ -26,7 +26,7 @@ public class CustomInvalidSessionStrategy implements InvalidSessionStrategy {
         PrintWriter writer = null;
         try {
             writer = response.getWriter();
-            String jsonResult = new ObjectMapper().writeValueAsString(Result.success().code(402).message("登录已过期！"));
+            String jsonResult = new ObjectMapper().writeValueAsString(Result.success().code(402).message("登录已过期，请重新登录！"));
             writer.write(jsonResult);
         } catch (IOException e) {
             e.printStackTrace();

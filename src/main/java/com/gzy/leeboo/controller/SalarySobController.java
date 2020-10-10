@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/salary/setOfBooks")
-public class SalarySetOfBooksController {
+public class SalarySobController {
     private SalaryService salaryService;
     private EmployeeService employeeService;
 

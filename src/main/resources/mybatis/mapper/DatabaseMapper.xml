@@ -7,6 +7,7 @@
         *
     FROM
         `database`
+    LIMIT 1
   </select>
 
   <!-- 修改数据库信息 -->
