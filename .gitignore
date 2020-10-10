@@ -4,9 +4,8 @@ target/
 !**/src/test/**/target/
 
 ### Properties ###
-application.properties
-application-dev.properties
-application-pro.properties
+src/main/resources/*.properties
+!src/main/resources/application-git.properties
 
 ### STS ###
 .apt_generated
