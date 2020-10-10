@@ -21,7 +21,7 @@
     </collection>
   </resultMap>
   
-  <resultMap id="AllRolesResultMap" type="com.gzy.leeboo.dto.BasicHr">
+  <resultMap id="BasicResultMap" type="com.gzy.leeboo.dto.BasicHr">
     <id column="id" property="id"/>
     <result column="name" property="name"/>
     <result column="phone" property="phone"/>
@@ -42,18 +42,18 @@
   <select id="getHrByUsername" parameterType="string" resultMap="HrWithRolesResultMap">
     SELECT
       hr.*,
-      role.`id` AS rId,
-      role.`name` AS rName,
-      role.`nameZh`,
-      role.`createTime`
+      `role`.`id` AS rId,
+      `role`.`name` AS rName,
+      `role`.`nameZh`,
+      `role`.`createTime`
     FROM
       hr,
       hr_role,
-      role
+      `role`
     WHERE
         hr.`id` = hr_role.`hrId`
       AND
-        hr_role.`rId` = role.`id`
+        hr_role.`rId` = `role`.`id`
       AND
         hr.`username` = #{username}
   </select>
@@ -68,8 +68,8 @@
         `id` != #{id}
   </select>
 
-  <!-- 获取所有Hr -->
-  <select id="getAllHrs" resultMap="AllRolesResultMap">
+  <!-- 查询Hr及其所有拥有角色的基础SQL -->
+  <sql id="basicHrWithRoles">
     SELECT
         hr.`id`,
         hr.`name`,
@@ -80,13 +80,35 @@
         hr.`avatar`,
         hr.`remark`,
         hr.`createTime`,
-        role.`id` AS rId,
-        role.`name` AS rName,
-        role.`nameZh`
+        `role`.`id` AS rId,
+        `role`.`name` AS rName,
+        `role`.`nameZh`
     FROM
         hr
-        LEFT JOIN hr_role ON hr.`id` = hr_role.`hrId`
-        LEFT JOIN role ON role.`id` = hr_role.`rId`
+    LEFT JOIN hr_role ON hr.`id` = hr_role.`hrId`
+    LEFT JOIN `role` ON `role`.`id` = hr_role.`rId`
+  </sql>
+
+  <!-- 根据id获取Hr -->
+  <select id="getHrById" parameterType="integer" resultMap="BasicResultMap">
+    <include refid="basicHrWithRoles"></include>
+    WHERE
+        hr.`id` = #{id}
+  </select>
+
+  <!-- 根据id获取Hr的头像 -->
+  <select id="getAvatarById" parameterType="integer" resultType="string">
+    SELECT
+        avatar
+    FROM
+        hr
+    WHERE
+        `id` = #{id}
+  </select>
+
+  <!-- 获取所有Hr -->
+  <select id="getAllHrs" resultMap="BasicResultMap">
+    <include refid="basicHrWithRoles"></include>
   </select>
 
   <!-- 根据角色id获取相关联的用户数量 -->
@@ -124,18 +146,10 @@
     UPDATE
         hr
     <set>
-      <if test="name != null and name.trim() != ''">
-        `name` = #{name},
-      </if>
-      <if test="phone != null and phone.trim() != ''">
-        `phone` = #{phone},
-      </if>
-      <if test="qq != null and qq.trim() != ''">
-        `qq` = #{qq},
-      </if>
-      <if test="address != null and address.trim() != ''">
-        `address` = #{address},
-      </if>
+      `name` = #{name},
+      `phone` = #{phone},
+      `qq` = #{qq},
+      `address` = #{address},
       <if test="remark != null and remark.trim() != ''">
         `remark` = #{remark},
       </if>
@@ -145,7 +159,7 @@
   </update>
 
   <!-- 由管理员修改密码 -->
-  <update id="updateHrPasswordByAdmin" parameterType="com.gzy.leeboo.dto.ResetPassword">
+  <update id="updateHrPassword" parameterType="com.gzy.leeboo.dto.ResetPassword">
     UPDATE
         hr
     SET
@@ -160,6 +174,15 @@
         hr
     SET
         `enabled` = #{enabled}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <update id="updateHrAvatar" parameterType="com.gzy.leeboo.dto.BasicHr">
+    UPDATE
+        hr
+    SET
+        `avatar` = #{avatar}
     WHERE
         `id` = #{id}
   </update>

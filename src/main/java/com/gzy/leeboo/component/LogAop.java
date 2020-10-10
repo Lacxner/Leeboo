@@ -3,14 +3,15 @@ package com.gzy.leeboo.component;
 import com.gzy.leeboo.controller.ChatController;
 import com.gzy.leeboo.controller.MenuController;
 import com.gzy.leeboo.entity.Hr;
-import com.gzy.leeboo.entity.SystemLog;
-import com.gzy.leeboo.service.SystemLogService;
+import com.gzy.leeboo.entity.Log;
+import com.gzy.leeboo.service.LogService;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -28,7 +29,7 @@ import java.time.ZoneOffset;
  */
 @Component
 @Aspect
-public class SystemLogAop {
+public class LogAop {
     // 访问时间
     private LocalDateTime visitTime;
     // 访问的类
@@ -36,11 +37,11 @@ public class SystemLogAop {
     // 访问的方法
     private Method method;
 
-    private SystemLogService systemLogService;
+    private LogService LogService;
 
     @Autowired
-    public void setSystemLogService(SystemLogService systemLogService) {
-        this.systemLogService =systemLogService;
+    public void setLogService(LogService LogService) {
+        this.LogService =LogService;
     }
 
     @Pointcut("execution(* com.gzy.leeboo.controller.*.get*(..))")
@@ -116,12 +117,11 @@ public class SystemLogAop {
         String url = request.getServletPath();
         // 获取当前操作的用户
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Hr hr = null;
-        if (authentication != null) {
-            hr = (Hr) authentication.getPrincipal();
+        if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
+            Hr hr = (Hr) authentication.getPrincipal();
+            // 日志信息的持久化
+            Log Log = new Log(method.getName(), pattern, url, hr.getUsername(), ip, visitTime, executionTime);
+            LogService.addLog(Log);
         }
-        // 日志信息的持久化
-        SystemLog systemLog = new SystemLog(method.getName(), pattern, url, hr.getUsername(), ip, visitTime, executionTime);
-        systemLogService.addSystemLog(systemLog);
     }
 }

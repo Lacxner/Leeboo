@@ -13,6 +13,10 @@ import java.util.List;
 public interface HrMapper {
     Hr getHrByUsername(String username);
 
+    BasicHr getHrById(Integer id);
+
+    String getAvatarById(Integer id);
+
     List<BasicHr> getAllHrs();
 
     Integer getHrCountsByRoleId(Integer roleId);
@@ -25,9 +29,11 @@ public interface HrMapper {
 
     Boolean updateHr(Hr hr);
 
-    Boolean updateHrPasswordByAdmin(ResetPassword resetPassword);
+    Boolean updateHrPassword(ResetPassword resetPassword);
 
     Boolean updateHrEnabled(BasicHr basicHr);
+
+    Boolean updateHrAvatar(BasicHr basicHr);
 
     Boolean deleteHrById(Integer id);
 }

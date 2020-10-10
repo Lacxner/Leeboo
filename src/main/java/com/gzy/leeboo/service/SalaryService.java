@@ -30,12 +30,16 @@ public class SalaryService {
         return salaryMapper.getAllSalary();
     }
 
-    public List<EmployeeSalary> getAllEmployeeSalary() {
-        return salaryMapper.getAllEmployeeSalary();
+    public List<EmployeeSalary> getAllEmployeeSalaryByName(String name) {
+        return salaryMapper.getAllEmployeeSalaryByName(name);
     }
 
     public List<BasicSalary> getAllBasicSalary() {
         return salaryMapper.getAllBasicSalary();
+    }
+
+    public Salary getSalaryByName(String name) {
+        return salaryMapper.getSalaryByName(name);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
@@ -47,6 +51,11 @@ public class SalaryService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public Boolean updateEmployeeSalary(Integer salaryId, Integer employeeId) {
         return salaryMapper.updateEmployeeSalary(salaryId, employeeId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    public Boolean addEmployeeSalary(Integer salaryId, Integer employeeId) {
+        return salaryMapper.addEmployeeSalary(salaryId, employeeId);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)

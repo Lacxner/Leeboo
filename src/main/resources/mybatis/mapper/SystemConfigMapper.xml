@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.SystemConfigMapper">
+  <!-- 获取系统配置信息 -->
+  <select id="getSystemConfig" resultType="com.gzy.leeboo.entity.SystemConfig">
+    SELECT
+        *
+    FROM
+        system_config
+    LIMIT 1
+  </select>
+
+  <!-- 修改系统配置信息 -->
+  <update id="updateSystemConfig" parameterType="com.gzy.leeboo.entity.SystemConfig">
+    UPDATE
+        system_config
+    <set>
+      <if test="company != null and company.trim() != ''">
+        `company` = #{company}
+      </if>
+    </set>
+  </update>
+</mapper>

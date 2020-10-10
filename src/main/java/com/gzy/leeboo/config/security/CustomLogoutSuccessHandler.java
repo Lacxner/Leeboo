@@ -28,7 +28,7 @@ public class CustomLogoutSuccessHandler implements LogoutSuccessHandler {
         PrintWriter writer = null;
         try {
             writer = response.getWriter();
-            String jsonResult = new ObjectMapper().writeValueAsString(Result.success().message("退出成功！"));
+            String jsonResult = new ObjectMapper().writeValueAsString(Result.success().message("注销成功！"));
             writer.write(jsonResult);
         } catch (IOException e) {
             e.printStackTrace();

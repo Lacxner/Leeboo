@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 /**
  * 系统日志
  */
-public class SystemLog implements Serializable {
+public class Log implements Serializable {
     private static final long serialVersionUID = 48960034333590793L;
 
     private Integer id;
@@ -21,9 +21,9 @@ public class SystemLog implements Serializable {
     private LocalDateTime visitTime;
     private Long executionTime;
 
-    public SystemLog() {}
+    public Log() {}
 
-    public SystemLog(String method, String pattern, String url, String username, String ip, LocalDateTime visitTime, Long executionTime) {
+    public Log(String method, String pattern, String url, String username, String ip, LocalDateTime visitTime, Long executionTime) {
         this.method = method;
         this.pattern = pattern;
         this.url = url;

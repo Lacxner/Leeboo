@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.gzy.leeboo.mapper.SystemLogMapper">
+<mapper namespace="com.gzy.leeboo.mapper.LogMapper">
   <!-- 获取所有的系统日志 -->
-  <select id="getAllSystemLogs" parameterType="string" resultType="com.gzy.leeboo.entity.SystemLog">
+  <select id="getAllLogs" parameterType="string" resultType="com.gzy.leeboo.entity.Log">
     SELECT
         *
     FROM
-        system_log
+        log
     <if test="username != null and username.trim() != ''">
       <bind name="usernameLike" value="'%' + username + '%'"/>
       WHERE
@@ -15,14 +15,14 @@
   </select>
 
   <!-- 添加系统日志 -->
-  <insert id="addSystemLog" parameterType="com.gzy.leeboo.entity.SystemLog">
+  <insert id="addLog" parameterType="com.gzy.leeboo.entity.Log">
     INSERT INTO
-        `system_log`(`method`, `pattern`, `url`, `username`, `ip`, `visitTime`, `executionTime`)
+        `log`(`method`, `pattern`, `url`, `username`, `ip`, `visitTime`, `executionTime`)
     VALUES(#{method}, #{pattern}, #{url}, #{username}, #{ip}, #{visitTime}, #{executionTime})
   </insert>
 
   <!-- 清空所有日志 -->
-  <delete id="deleteAllSystemLogs">
-    TRUNCATE TABLE system_log
+  <delete id="deleteAllLogs">
+    TRUNCATE TABLE log
   </delete>
 </mapper>

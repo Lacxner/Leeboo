@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.PaydayMapper">
+  <!-- 获取发薪日 -->
+  <select id="getPayday" resultType="com.gzy.leeboo.entity.Payday">
+    SELECT
+        *
+    FROM
+        payday
+    LIMIT 1
+  </select>
+
+  <!-- 修改发薪日 -->
+  <update id="updatePayday" parameterType="integer">
+    UPDATE
+        payday
+    SET
+        `day` = #{day}
+  </update>
+</mapper>

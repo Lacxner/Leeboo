@@ -15,6 +15,8 @@ import java.util.List;
  * 登录Hr用户
  */
 public class Hr implements UserDetails, Serializable {
+    private static final long serialVersionUID = 5652835615501269325L;
+
     private Integer id;
     private String name;
     private String phone;
@@ -150,5 +152,23 @@ public class Hr implements UserDetails, Serializable {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @Override
+    public String toString() {
+        return "Hr{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", qq='" + qq + '\'' +
+                ", address='" + address + '\'' +
+                ", enabled=" + enabled +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                ", avatar='" + avatar + '\'' +
+                ", remark='" + remark + '\'' +
+                ", roles=" + roles +
+                ", createTime=" + createTime +
+                '}';
     }
 }

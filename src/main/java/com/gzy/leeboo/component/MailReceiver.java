@@ -2,6 +2,8 @@ package com.gzy.leeboo.component;
 
 import com.gzy.leeboo.entity.Employee;
 import com.gzy.leeboo.entity.Hr;
+import com.gzy.leeboo.entity.SystemConfig;
+import com.gzy.leeboo.service.SystemConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -27,14 +29,13 @@ import java.time.format.DateTimeFormatter;
  * 该组件中的 <code>handle</code> 方法会接受 RabbitMQ 中的消息，然后发送邮件。
  */
 @Component
-@ConfigurationProperties(prefix = "mail.welcome")
 public class MailReceiver {
     private static final Logger LOGGER = LoggerFactory.getLogger(MailReceiver.class);
 
     private JavaMailSender javaMailSender;
     private MailProperties mailProperties;
     private TemplateEngine templateEngine;
-    private String company;
+    private SystemConfigService systemConfigService;
 
     @Autowired
     public void setJavaMailSender(JavaMailSender javaMailSender) {
@@ -51,6 +52,11 @@ public class MailReceiver {
         this.templateEngine = templateEngine;
     }
 
+    @Autowired
+    public void setSystemConfigService(SystemConfigService systemConfigService) {
+        this.systemConfigService = systemConfigService;
+    }
+
     @RabbitListener(queues = "mail.welcome")
     public void handle(Employee employee) {
         try {
@@ -61,20 +67,19 @@ public class MailReceiver {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             // 设置发送方
             if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
-                Object principal = authentication.getPrincipal();
-                if (principal instanceof Hr) {
-                    Hr hr = (Hr) principal;
-                    mimeMessageHelper.setFrom(new InternetAddress(mailProperties.getUsername(), hr.getName(), "UTF-8"));
-                }
+                Hr hr = (Hr) authentication.getPrincipal();
+                mimeMessageHelper.setFrom(new InternetAddress(mailProperties.getUsername(), hr.getName(), "UTF-8"));
+            } else {
+                mimeMessageHelper.setFrom(mailProperties.getUsername());
             }
-            mimeMessageHelper.setFrom(mailProperties.getUsername());
             // 设置接收方
             mimeMessageHelper.setTo(employee.getEmail());
 
             // 设置Thymeleaf模板引擎的上下文，从而传入数据
             Context context = new Context();
             context.setVariable("name", employee.getName());
-            context.setVariable("company", company);
+            SystemConfig systemConfig = systemConfigService.getSystemConfig();
+            context.setVariable("company", systemConfig.getCompany());
             context.setVariable("department", employee.getDepartment().getName());
             context.setVariable("position", employee.getPosition().getName());
             context.setVariable("rank", employee.getRank().getName());
@@ -92,13 +97,5 @@ public class MailReceiver {
             e.printStackTrace();
             LOGGER.error("邮件发送失败！");
         }
-    }
-
-    public String getCompany() {
-        return company;
-    }
-
-    public void setCompany(String company) {
-        this.company = company;
     }
 }

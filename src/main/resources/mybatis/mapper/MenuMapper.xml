@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gzy.leeboo.mapper.MenuMapper" >
-  <resultMap id="BaseMenuResultMap" type="com.gzy.leeboo.entity.Menu" >
+  <resultMap id="BasicMenuResultMap" type="com.gzy.leeboo.entity.Menu" >
     <id column="id" property="id"/>
     <result column="url" property="url"/>
     <result column="path" property="path"/>
@@ -16,7 +16,7 @@
     </association>
   </resultMap>
 
-  <resultMap id="AllMenuResultMap" type="com.gzy.leeboo.entity.Menu" extends="BaseMenuResultMap">
+  <resultMap id="AllMenuResultMap" type="com.gzy.leeboo.entity.Menu" extends="BasicMenuResultMap">
     <collection property="children" javaType="arrayList" ofType="com.gzy.leeboo.entity.Menu">
       <id column="id2" property="id"/>
       <result column="url2" property="url"/>
@@ -33,7 +33,7 @@
     </collection>
   </resultMap>
 
-  <resultMap id="AllMenuWithRolesResultMap" type="com.gzy.leeboo.entity.Menu" extends="BaseMenuResultMap">
+  <resultMap id="AllMenuWithRolesResultMap" type="com.gzy.leeboo.entity.Menu" extends="BasicMenuResultMap">
     <collection property="roles" javaType="arrayList" ofType="com.gzy.leeboo.entity.Role">
       <id column="rId" property="id"/>
       <result column="rName" property="name"/>
@@ -164,7 +164,7 @@
   </delete>
 
   <!-- 根据id获取菜单 -->
-<!--  <select id="getMenuById" parameterType="integer" resultMap="BaseMenuResultMap">-->
+<!--  <select id="getMenuById" parameterType="integer" resultMap="BasicMenuResultMap">-->
 <!--    SELECT-->
 <!--        *-->
 <!--    FROM-->
