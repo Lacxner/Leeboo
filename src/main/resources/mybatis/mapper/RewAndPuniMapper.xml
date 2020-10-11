@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.RewAndPuniMapper">
+  <!-- 获取所有的奖励 -->
+  <select id="getAllRewards" resultType="com.gzy.leeboo.entity.Reward">
+    SELECT
+        *
+    FROM
+        reward
+  </select>
+
+  <!-- 获取所有的惩罚 -->
+  <select id="getAllPunishments" resultType="com.gzy.leeboo.entity.Punishment">
+    SELECT
+        *
+    FROM
+        punishment
+  </select>
+
+  <!-- 添加奖励 -->
+  <insert id="addReward" parameterType="com.gzy.leeboo.entity.Reward">
+    INSERT INTO
+        `reward`(`name`, `money`)
+    VALUES(#{name}, #{money})
+  </insert>
+
+  <!-- 添加惩罚 -->
+  <insert id="addPunishment" parameterType="com.gzy.leeboo.entity.Punishment">
+    INSERT INTO
+        `punishment`(`name`, `money`)
+    VALUES(#{name}, #{money})
+  </insert>
+
+  <!-- 为员工添加奖励 -->
+  <insert id="addEmployeeReward">
+    INSERT INTO
+        `employee_reward`(`eId`, `rId`)
+    VALUES(#{employeeId}, #{rewardId})
+  </insert>
+
+  <!-- 为员工添加惩罚 -->
+  <insert id="addEmployeePunishment">
+    INSERT INTO
+        `employee_punishment`(`eId`, `pId`)
+    VALUES(#{employeeId}, #{punishmentId})
+  </insert>
+
+  <!-- 根据id删除奖励 -->
+  <delete id="deleteRewardById" parameterType="integer">
+    DELETE FROM
+        reward
+    WHERE
+        `id` = #{id}
+  </delete>
+
+  <!-- 根据id删除惩罚 -->
+  <delete id="deletePunishmentById" parameterType="integer">
+    DELETE FROM
+        punishment
+    WHERE
+        `id` = #{id}
+  </delete>
+
+  <!-- 删除员工的某个奖励 -->
+  <delete id="deleteEmployeeReward">
+    DELETE FROM
+        employee_reward
+    WHERE
+        `eId` = #{employeeId}
+        AND
+        `rId` = #{rewardId}
+  </delete>
+
+  <!-- 删除员工的某个惩罚 -->
+  <delete id="deleteEmployeePunishment">
+    DELETE FROM
+        employee_punishment
+    WHERE
+        `eId` = #{employeeId}
+        AND
+        `pId` = #{punishmentId}
+  </delete>
+</mapper>

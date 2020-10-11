@@ -44,22 +44,19 @@ public class LogAop {
         this.LogService =LogService;
     }
 
-    @Pointcut("execution(* com.gzy.leeboo.controller.*.get*(..))")
-    public void getPointcut() {}
-    @Pointcut("execution(* com.gzy.leeboo.controller.*.post*(..))")
-    public void postPointcut() {}
-    @Pointcut("execution(* com.gzy.leeboo.controller.*.put*(..))")
-    public void putPointcut() {}
+    @Pointcut("execution(* com.gzy.leeboo.controller.*.add*(..))")
+    public void addPointcut() {}
+    @Pointcut("execution(* com.gzy.leeboo.controller.*.update*(..))")
+    public void updatePointcut() {}
     @Pointcut("execution(* com.gzy.leeboo.controller.*.delete*(..))")
     public void deletePointcut() {}
     @Pointcut("!execution(* com.gzy.leeboo.controller.MenuController.*(..))")
     public void exceptMenu() {}
     @Pointcut("!execution(* com.gzy.leeboo.controller.ChatController.*(..))")
     public void exceptChat() {}
-    @Pointcut("(getPointcut() || postPointcut() || putPointcut() || deletePointcut()) && exceptMenu() && exceptChat()")
+    @Pointcut("(addPointcut() || updatePointcut() || deletePointcut()) && exceptMenu() && exceptChat()")
     public void finalPointcut() {}
 
-    @RequestMapping(method = RequestMethod.GET)
     @Before("finalPointcut()")
     public void doBefore(JoinPoint joinPoint) {
         // 获取访问时间

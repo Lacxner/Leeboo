@@ -6,7 +6,7 @@
     SELECT
         *
     FROM
-        role
+        `role`
   </select>
   
   <!-- 添加角色 -->
@@ -29,7 +29,7 @@
   <!-- 修改角色 -->
   <update id="updateRole" parameterType="com.gzy.leeboo.entity.Role" >
     UPDATE
-        role
+        `role`
     <set >
       <if test="name != null and name.trim() != ''">
         `name` = #{name},
@@ -53,7 +53,7 @@
   <!-- 根据id删除角色 -->
   <delete id="deleteRoleById" parameterType="integer">
     DELETE FROM
-        role
+        `role`
     WHERE
         `id` = #{id}
   </delete>
@@ -61,7 +61,7 @@
   <!-- 根据id批量删除角色 -->
   <delete id="deleteBatchRoleByIds" parameterType="list">
     DELETE FROM
-        role
+        `role`
     WHERE
         `id` IN
     <foreach collection="list" item="id" open="(" separator="," close=")">

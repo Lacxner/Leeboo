@@ -125,9 +125,9 @@
   <!-- 添加工资账套 -->
   <insert id="addSalary" parameterType="com.gzy.leeboo.entity.Salary" >
     INSERT INTO
-    `salary`(`name`, `basicSalary`, `bonus`, `lunchSalary`, `trafficSalary`, `allSalary`, `pensionBase`, `pensionPer`, `medicalBase`,
+    `salary`(`name`, `basicSalary`, `lunchSalary`, `trafficSalary`, `allSalary`, `pensionBase`, `pensionPer`, `medicalBase`,
       `medicalPer`, `accumulationFundBase`, `accumulationFundPer`)
-    VALUES (#{name}, #{basicSalary}, #{bonus}, #{lunchSalary}, #{trafficSalary}, #{allSalary}, #{pensionBase}, #{pensionPer}, #{medicalBase},
+    VALUES (#{name}, #{basicSalary}, #{lunchSalary}, #{trafficSalary}, #{allSalary}, #{pensionBase}, #{pensionPer}, #{medicalBase},
       #{medicalPer}, #{accumulationFundBase},  #{accumulationFundPer})
   </insert>
 

@@ -15,9 +15,9 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
 
-@RequestMapping("/employee/basic")
+@RequestMapping("/employee/info")
 @RestController
-public class EmployeeBasicController {
+public class EmployeeInfoController {
     private EmployeeService employeeService;
     private NationService nationService;
     private PoliticsService politicsService;
