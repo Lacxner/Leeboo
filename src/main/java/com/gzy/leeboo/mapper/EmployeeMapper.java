@@ -14,6 +14,8 @@ public interface EmployeeMapper {
 
     List<Employee> searchEmployees(SearchEmployee searchEmployee);
 
+    Integer getEmployeeIdByName(String name);
+
     Integer getMaxWorkID();
 
     Integer getEmployeeCountsByDepartmentId(Integer departmentId);
@@ -28,9 +30,13 @@ public interface EmployeeMapper {
 
     Integer getEmployeeCountsByRankIds(List<Integer> rankIds);
 
-    Integer getEmployeeCountsBySalaryId(Integer salaryId);
+    Integer getEmployeeCountsBySalarySobId(Integer salarySobId);
 
-    Integer getEmployeeCountsBySalaryIds(List<Integer> salaryIds);
+    Integer getEmployeeCountsBySalarySobIds(List<Integer> salarySobIds);
+
+    Integer getEmployeeCountsByRewardId(Integer rewardId);
+
+    Integer getEmployeeCountsByPunishmentId(Integer punishmentId);
 
     Boolean addEmployee(Employee employee);
 

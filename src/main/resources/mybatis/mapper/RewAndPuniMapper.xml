@@ -9,7 +9,39 @@
         reward
   </select>
 
-  <!-- 获取所有的惩罚 -->
+  <!-- 根据员工姓名获取其拥有的所有奖励 -->
+  <select id="getRewardsByEmployeeName" parameterType="string" resultType="com.gzy.leeboo.entity.Reward">
+    SELECT
+      r.*
+    FROM
+      employee AS e,
+      employee_reward AS er,
+      reward AS r
+    WHERE
+      e.`id` = er.`eId`
+      AND
+      r.`id` = er.`rId`
+      AND
+      e.`name` = #{name}
+  </select>
+
+  <!-- 根据员工姓名获取其拥有的所有处罚 -->
+  <select id="getPunishmentsByEmployeeName" parameterType="string" resultType="com.gzy.leeboo.entity.Punishment">
+    SELECT
+      p.*
+    FROM
+      employee AS e,
+      employee_punishment AS ep,
+      punishment AS p
+    WHERE
+      e.`id` = ep.`eId`
+      AND
+      p.`id` = ep.`pId`
+      AND
+      e.`name` = #{name}
+  </select>
+
+  <!-- 获取所有的处罚 -->
   <select id="getAllPunishments" resultType="com.gzy.leeboo.entity.Punishment">
     SELECT
         *
@@ -24,7 +56,7 @@
     VALUES(#{name}, #{money})
   </insert>
 
-  <!-- 添加惩罚 -->
+  <!-- 添加处罚 -->
   <insert id="addPunishment" parameterType="com.gzy.leeboo.entity.Punishment">
     INSERT INTO
         `punishment`(`name`, `money`)
@@ -38,7 +70,7 @@
     VALUES(#{employeeId}, #{rewardId})
   </insert>
 
-  <!-- 为员工添加惩罚 -->
+  <!-- 为员工添加处罚 -->
   <insert id="addEmployeePunishment">
     INSERT INTO
         `employee_punishment`(`eId`, `pId`)
@@ -53,7 +85,7 @@
         `id` = #{id}
   </delete>
 
-  <!-- 根据id删除惩罚 -->
+  <!-- 根据id删除处罚 -->
   <delete id="deletePunishmentById" parameterType="integer">
     DELETE FROM
         punishment
@@ -71,7 +103,7 @@
         `rId` = #{rewardId}
   </delete>
 
-  <!-- 删除员工的某个惩罚 -->
+  <!-- 删除员工的某个处罚 -->
   <delete id="deleteEmployeePunishment">
     DELETE FROM
         employee_punishment

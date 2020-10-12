@@ -46,7 +46,7 @@
     </association>
   </resultMap>
 
-  <sql id="BaseQuery">
+  <sql id="baseQuery">
     SELECT
       employee.*,
       nation.`id` AS nId,
@@ -57,51 +57,61 @@
       department.`name` AS dName,
       rank.`id` AS rId,
       rank.`name` AS rName,
-      position.`id` AS posId,
-      position.`name` AS posName
+      `position`.`id` AS posId,
+      `position`.`name` AS posName
     FROM
       employee,
       nation,
       politics,
       department,
       rank,
-      position
+      `position`
   </sql>
 
   <!-- 根据id获取员工 -->
   <select id="getEmployeeById" parameterType="integer" resultMap="BasicResultMap">
-    <include refid="BaseQuery"/>
+    <include refid="baseQuery"/>
     WHERE
         employee.`nationId` = nation.`id`
         AND employee.`politicsId` = politics.`id`
         AND employee.`departmentId` = department.`id`
         AND employee.`rankId` = rank.`id`
-        AND employee.`positionId` = position.`id`
+        AND employee.`positionId` = `position`.`id`
         AND employee.`id` = #{id}
   </select>
 
   <!-- 获取所有员工 -->
   <select id="getAllEmployees" parameterType="integer" resultMap="BasicResultMap">
-    <include refid="BaseQuery"/>
+    <include refid="baseQuery"/>
     WHERE
         employee.`nationId` = nation.`id`
         AND employee.`politicsId` = politics.`id`
         AND employee.`departmentId` = department.`id`
         AND employee.`rankId` = rank.`id`
-        AND employee.`positionId` = position.`id`
+        AND employee.`positionId` = `position`.`id`
     ORDER BY
 			  employee.`id`
   </select>
 
+  <!-- 通过姓名获取员工id -->
+  <select id="getEmployeeIdByName" parameterType="string" resultType="integer">
+    SELECT
+        `id`
+    FROM
+        employee
+    WHERE
+        `name` = #{name}
+  </select>
+
   <!-- 高级搜索 -->
   <select id="searchEmployees" parameterType="com.gzy.leeboo.dto.SearchEmployee" resultMap="BasicResultMap">
-    <include refid="BaseQuery"/>
+    <include refid="baseQuery"/>
     <where>
       employee.`nationId` = nation.`id`
       AND employee.`politicsId` = politics.`id`
       AND employee.`departmentId` = department.`id`
       AND employee.`rankId` = rank.`id`
-      AND employee.`positionId` = position.`id`
+      AND employee.`positionId` = `position`.`id`
       <if test="name != null and name.trim() != ''">
         <bind name="nameLike" value="'%' + name + '%'"/>
         AND employee.`name` LIKE #{nameLike}
@@ -210,26 +220,46 @@
   </select>
 
   <!-- 根据工资账套id获取相关联的员工数量 -->
-  <select id="getEmployeeCountsBySalaryId" parameterType="integer" resultType="integer">
+  <select id="getEmployeeCountsBySalarySobId" parameterType="integer" resultType="integer">
     SELECT
         COUNT(1)
     FROM
-        employee_salary
+        employee
     WHERE
-        `sId` = #{salaryId}
+        `salarySobId` = #{salarySobId}
   </select>
 
   <!-- 根据工资账套id的集合获取相关联的员工数量 -->
-  <select id="getEmployeeCountsBySalaryIds" parameterType="list" resultType="integer">
+  <select id="getEmployeeCountsBySalarySobIds" parameterType="list" resultType="integer">
     SELECT
         COUNT(1)
     FROM
-        employee_salary
+        employee
     WHERE
-        `sId` IN
-    <foreach collection="list" item="salaryId" open="(" separator="," close=")">
-        #{salaryId}
+        `salarySobId` IN
+    <foreach collection="list" item="salarySobId" open="(" separator="," close=")">
+        #{salarySobId}
     </foreach>
+  </select>
+
+  <!-- 根据奖励id获取相关员工的数量 -->
+  <select id="getEmployeeCountsByRewardId" parameterType="integer" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee_reward
+    WHERE
+        `rId` = #{rId}
+  </select>
+
+  <!-- 根据处罚id获取相关员工的数量 -->
+  <select id="getEmployeeCountsByPunishmentId" parameterType="integer" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee_punishment
+    WHERE
+        `pId` = #{pId}
   </select>
 
   <!-- 添加员工 -->
@@ -356,9 +386,9 @@
   <!-- 根据id批量删除员工 -->
   <delete id="deleteBatchEmployeeByIds" parameterType="list" >
     DELETE FROM
-    employee
+        employee
     WHERE
-    `id` IN
+        `id` IN
     <foreach collection="list" item="id" open="(" separator="," close=")">
       #{id}
     </foreach>

@@ -5,8 +5,8 @@ import java.io.Serializable;
 /**
  * 用于下拉框中选择工资账套
  */
-public class BasicSalary implements Serializable {
-    private static final long serialVersionUID = -7839481849046716908L;
+public class BasicSalarySob implements Serializable {
+    private static final long serialVersionUID = -4588975534091928672L;
 
     private Integer id;
     private String name;

@@ -28,6 +28,14 @@ public class RewAndPuniService {
         return rewAndPuniMapper.getAllPunishments();
     }
 
+    public List<Reward> getRewardsByEmployeeName(String name) {
+        return rewAndPuniMapper.getRewardsByEmployeeName(name);
+    }
+
+    public List<Punishment> getPunishmentsByEmployeeName(String name) {
+        return rewAndPuniMapper.getPunishmentsByEmployeeName(name);
+    }
+
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public Boolean addReward(Reward reward) {
         return rewAndPuniMapper.addReward(reward);

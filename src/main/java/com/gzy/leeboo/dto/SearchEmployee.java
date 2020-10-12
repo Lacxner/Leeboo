@@ -14,6 +14,7 @@ import java.time.LocalDate;
 public class SearchEmployee implements Serializable {
     private static final long serialVersionUID = 5221925098112956442L;
 
+    private Integer id;
     private String name;
     private String workID;
     private String phone;
@@ -24,6 +25,14 @@ public class SearchEmployee implements Serializable {
     private LocalDate beginContract;
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Shanghai")
     private LocalDate endContract;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;

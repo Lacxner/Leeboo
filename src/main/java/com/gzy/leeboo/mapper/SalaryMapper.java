@@ -1,31 +1,18 @@
 package com.gzy.leeboo.mapper;
 
-import com.gzy.leeboo.dto.BasicSalary;
-import com.gzy.leeboo.dto.EmployeeSalary;
 import com.gzy.leeboo.entity.Salary;
+import com.gzy.leeboo.entity.SalarySob;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 public interface SalaryMapper {
-    List<Salary> getAllSalary();
-
-    List<EmployeeSalary> getAllEmployeeSalaryByName(String name);
-
-    List<BasicSalary> getAllBasicSalary();
-
     Salary getSalaryByName(String name);
 
-    Boolean addSalary(Salary salary);
+    Boolean addSalary(SalarySob salarySob);
 
-    Boolean updateSalary(Salary salary);
+    Boolean updateSalary(SalarySob salarySob);
 
-    Boolean updateEmployeeSalary(Integer salaryId, Integer employeeId);
+    Boolean updateSalaryReward(Integer money, Integer id);
 
-    Boolean addEmployeeSalary(Integer salaryId, Integer employeeId);
-
-    Boolean deleteSalaryById(Integer id);
-
-    Boolean deleteBatchSalaryByIds(List<Integer> ids);
+    Boolean updateSalaryPunishment(Integer money, Integer id);
 }

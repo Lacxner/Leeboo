@@ -12,6 +12,10 @@ public interface RewAndPuniMapper {
     
     List<Punishment> getAllPunishments();
 
+    List<Reward> getRewardsByEmployeeName(String name);
+
+    List<Punishment> getPunishmentsByEmployeeName(String name);
+
     Boolean addReward(Reward reward);
 
     Boolean addPunishment(Punishment punishment);

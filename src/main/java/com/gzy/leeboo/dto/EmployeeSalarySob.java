@@ -2,14 +2,15 @@ package com.gzy.leeboo.dto;
 
 import com.gzy.leeboo.entity.Department;
 import com.gzy.leeboo.entity.Salary;
+import com.gzy.leeboo.entity.SalarySob;
 
 import java.io.Serializable;
 
 /**
  * 员工基本信息及其工资账套
  */
-public class EmployeeSalary implements Serializable {
-    private static final long serialVersionUID = -5853100690934348349L;
+public class EmployeeSalarySob implements Serializable {
+    private static final long serialVersionUID = 8625041936474213517L;
 
     private Integer id;
     private String name;
@@ -17,7 +18,7 @@ public class EmployeeSalary implements Serializable {
     private String email;
     private String phone;
     private Department department;
-    private Salary salary;
+    private SalarySob salarySob;
 
     public Integer getId() {
         return id;
@@ -67,11 +68,11 @@ public class EmployeeSalary implements Serializable {
         this.department = department;
     }
 
-    public Salary getSalary() {
-        return salary;
+    public SalarySob getSalarySob() {
+        return salarySob;
     }
 
-    public void setSalary(Salary salary) {
-        this.salary = salary;
+    public void setSalarySob(SalarySob salarySob) {
+        this.salarySob = salarySob;
     }
 }

@@ -80,6 +80,10 @@ public class EmployeeService {
         return employeeMapper.searchEmployees(searchEmployee);
     }
 
+    public Integer getEmployeeIdByName(String name) {
+        return employeeMapper.getEmployeeIdByName(name);
+    }
+
     public Integer getMaxWorkID() {
         return employeeMapper.getMaxWorkID();
     }
@@ -108,12 +112,20 @@ public class EmployeeService {
         return employeeMapper.getEmployeeCountsByRankIds(rankIds);
     }
 
-    public Integer getEmployeeCountsBySalaryId(Integer salaryId) {
-        return employeeMapper.getEmployeeCountsBySalaryId(salaryId);
+    public Integer getEmployeeCountsBySalarySobId(Integer salarySobId) {
+        return employeeMapper.getEmployeeCountsBySalarySobId(salarySobId);
     }
 
-    public Integer getEmployeeCountsBySalaryIds(List<Integer> salaryIds) {
-        return employeeMapper.getEmployeeCountsBySalaryIds(salaryIds);
+    public Integer getEmployeeCountsBySalarySobIds(List<Integer> salarySobIds) {
+        return employeeMapper.getEmployeeCountsBySalarySobIds(salarySobIds);
+    }
+
+    public Integer getEmployeeCountsByRewardId(Integer rewardId) {
+        return employeeMapper.getEmployeeCountsByRewardId(rewardId);
+    }
+
+    public Integer getEmployeeCountsByPunishmentId(Integer punishmentId) {
+        return employeeMapper.getEmployeeCountsByPunishmentId(punishmentId);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)

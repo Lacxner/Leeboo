@@ -6,15 +6,14 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
- * 工资
+ * 工资账套
  */
-public class Salary implements Serializable {
-    private static final long serialVersionUID = -7450934844966644929L;
+public class SalarySob implements Serializable {
+    private static final long serialVersionUID = -6483910677642224889L;
 
     private Integer id;
+    private String name;
     private Integer basicSalary;
-    private Integer reward;
-    private Integer punishment;
     private Integer lunchSalary;
     private Integer trafficSalary;
     private Integer allSalary;
@@ -24,7 +23,6 @@ public class Salary implements Serializable {
     private Double medicalPer;
     private Integer accumulationFundBase;
     private Double accumulationFundPer;
-    private Double actualSalary;
     @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime createTime;
 
@@ -36,28 +34,20 @@ public class Salary implements Serializable {
         this.id = id;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public Integer getBasicSalary() {
         return basicSalary;
     }
 
     public void setBasicSalary(Integer basicSalary) {
         this.basicSalary = basicSalary;
-    }
-
-    public Integer getBonus() {
-        return reward;
-    }
-
-    public void setBonus(Integer reward) {
-        this.reward = reward;
-    }
-
-    public Integer getPunishment() {
-        return punishment;
-    }
-
-    public void setPunishment(Integer punishment) {
-        this.punishment = punishment;
     }
 
     public Integer getLunchSalary() {
@@ -130,14 +120,6 @@ public class Salary implements Serializable {
 
     public void setAccumulationFundPer(Double accumulationFundPer) {
         this.accumulationFundPer = accumulationFundPer;
-    }
-
-    public Double getActualSalary() {
-        return actualSalary;
-    }
-
-    public void setActualSalary(Double actualSalary) {
-        this.actualSalary = actualSalary;
     }
 
     public LocalDateTime getCreateTime() {

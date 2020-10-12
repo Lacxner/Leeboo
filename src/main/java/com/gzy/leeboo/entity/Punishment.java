@@ -3,7 +3,7 @@ package com.gzy.leeboo.entity;
 import java.io.Serializable;
 
 /**
- * 惩罚
+ * 处罚
  */
 public class Punishment implements Serializable {
     private static final long serialVersionUID = -7381669093018218716L;
