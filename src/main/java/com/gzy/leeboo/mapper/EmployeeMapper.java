@@ -38,6 +38,8 @@ public interface EmployeeMapper {
 
     Integer getEmployeeCountsByPunishmentId(Integer punishmentId);
 
+    Integer getSalaryIdById(Integer id);
+
     Boolean addEmployee(Employee employee);
 
     Boolean addBatchEmployees(List<Employee> employees);

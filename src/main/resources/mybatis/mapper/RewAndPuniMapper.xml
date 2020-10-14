@@ -9,6 +9,26 @@
         reward
   </select>
 
+  <!-- 根据id获取奖励 -->
+  <select id="getRewardById" parameterType="integer" resultType="com.gzy.leeboo.entity.Reward">
+    SELECT
+        *
+    FROM
+        reward
+    WHERE
+        `id` = #{id}
+  </select>
+
+  <!-- 根据id获取处罚 -->
+  <select id="getPunishmentById" parameterType="integer" resultType="com.gzy.leeboo.entity.Punishment">
+    SELECT
+        *
+    FROM
+        punishment
+    WHERE
+        `id` = #{id}
+  </select>
+
   <!-- 根据员工姓名获取其拥有的所有奖励 -->
   <select id="getRewardsByEmployeeName" parameterType="string" resultType="com.gzy.leeboo.entity.Reward">
     SELECT

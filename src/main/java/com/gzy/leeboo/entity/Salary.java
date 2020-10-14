@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
  * 工资
  */
 public class Salary implements Serializable {
-    private static final long serialVersionUID = -7450934844966644929L;
+    private static final long serialVersionUID = 5739597335331010435L;
 
     private Integer id;
     private Integer basicSalary;
@@ -17,7 +17,7 @@ public class Salary implements Serializable {
     private Integer punishment;
     private Integer lunchSalary;
     private Integer trafficSalary;
-    private Integer allSalary;
+    private Double allSalary;
     private Integer pensionBase;
     private Double pensionPer;
     private Integer medicalBase;
@@ -25,8 +25,6 @@ public class Salary implements Serializable {
     private Integer accumulationFundBase;
     private Double accumulationFundPer;
     private Double actualSalary;
-    @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss", timezone = "Asia/Shanghai")
-    private LocalDateTime createTime;
 
     public Integer getId() {
         return id;
@@ -44,11 +42,11 @@ public class Salary implements Serializable {
         this.basicSalary = basicSalary;
     }
 
-    public Integer getBonus() {
+    public Integer getReward() {
         return reward;
     }
 
-    public void setBonus(Integer reward) {
+    public void setReward(Integer reward) {
         this.reward = reward;
     }
 
@@ -76,11 +74,11 @@ public class Salary implements Serializable {
         this.trafficSalary = trafficSalary;
     }
 
-    public Integer getAllSalary() {
+    public Double getAllSalary() {
         return allSalary;
     }
 
-    public void setAllSalary(Integer allSalary) {
+    public void setAllSalary(Double allSalary) {
         this.allSalary = allSalary;
     }
 
@@ -138,13 +136,5 @@ public class Salary implements Serializable {
 
     public void setActualSalary(Double actualSalary) {
         this.actualSalary = actualSalary;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
     }
 }

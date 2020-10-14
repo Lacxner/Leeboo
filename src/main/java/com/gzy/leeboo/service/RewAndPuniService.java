@@ -1,8 +1,11 @@
 package com.gzy.leeboo.service;
 
+import com.gzy.leeboo.entity.Employee;
 import com.gzy.leeboo.entity.Punishment;
 import com.gzy.leeboo.entity.Reward;
+import com.gzy.leeboo.mapper.EmployeeMapper;
 import com.gzy.leeboo.mapper.RewAndPuniMapper;
+import com.gzy.leeboo.mapper.SalaryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -14,10 +17,22 @@ import java.util.List;
 @Service
 public class RewAndPuniService {
     private RewAndPuniMapper rewAndPuniMapper;
+    private SalaryMapper salaryMapper;
+    private EmployeeMapper employeeMapper;
 
     @Autowired
     public void setRewAndPuniMapper(RewAndPuniMapper rewAndPuniMapper) {
         this.rewAndPuniMapper = rewAndPuniMapper;
+    }
+
+    @Autowired
+    public void setSalaryMapper(SalaryMapper salaryMapper) {
+        this.salaryMapper = salaryMapper;
+    }
+
+    @Autowired
+    public void setEmployeeMapper(EmployeeMapper employeeMapper) {
+        this.employeeMapper = employeeMapper;
     }
 
     public List<Reward> getAllRewards() {
@@ -48,12 +63,40 @@ public class RewAndPuniService {
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public Boolean addEmployeeReward(Integer employeeId, Integer rewardId) {
-        return rewAndPuniMapper.addEmployeeReward(employeeId, rewardId);
+        Reward reward = rewAndPuniMapper.getRewardById(rewardId);
+        Integer salaryId = employeeMapper.getSalaryIdById(employeeId);
+        if (!rewAndPuniMapper.addEmployeeReward(employeeId, rewardId) || !salaryMapper.increaseSalaryReward(reward.getMoney(), salaryId)) {
+            return false;
+        }
+        return true;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public Boolean addEmployeePunishment(Integer employeeId, Integer punishmentId) {
-        return rewAndPuniMapper.addEmployeePunishment(employeeId, punishmentId);
+        Punishment punishment = rewAndPuniMapper.getPunishmentById(punishmentId);
+        Integer salaryId = employeeMapper.getSalaryIdById(employeeId);
+        if (!rewAndPuniMapper.addEmployeePunishment(employeeId, punishmentId) || !salaryMapper.increaseSalaryPunishment(punishment.getMoney(), salaryId)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    public Boolean removeEmployeeReward(Integer employeeId, Reward reward) {
+        Integer salaryId = employeeMapper.getSalaryIdById(employeeId);
+        if (!rewAndPuniMapper.deleteEmployeeReward(employeeId, reward.getId()) || !salaryMapper.decreaseSalaryReward(reward.getMoney(), salaryId)) {
+            return false;
+        }
+        return true;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
+    public Boolean removeEmployeePunishment(Integer employeeId, Punishment punishment) {
+        Integer salaryId = employeeMapper.getSalaryIdById(employeeId);
+        if (!rewAndPuniMapper.deleteEmployeePunishment(employeeId, punishment.getId()) || !salaryMapper.decreaseSalaryPunishment(punishment.getMoney(), salaryId)) {
+            return false;
+        }
+        return true;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
@@ -64,15 +107,5 @@ public class RewAndPuniService {
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
     public Boolean deletePunishmentById(Integer id) {
         return rewAndPuniMapper.deletePunishmentById(id);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public Boolean deleteEmployeeReward(Integer employeeId, Integer rewardId) {
-        return rewAndPuniMapper.deleteEmployeeReward(employeeId, rewardId);
-    }
-
-    @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
-    public Boolean deleteEmployeePunishment(Integer employeeId, Integer punishmentId) {
-        return rewAndPuniMapper.deleteEmployeePunishment(employeeId, punishmentId);
     }
 }

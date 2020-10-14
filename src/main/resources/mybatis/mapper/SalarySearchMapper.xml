@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.SalarySearchMapper" >
+  <!-- 根据员工姓名获取其工资 -->
+  <select id="getSalaryByEmployeeName" parameterType="string" resultType="com.gzy.leeboo.entity.Salary">
+    SELECT
+      s.*
+    FROM
+      employee AS e,
+      salary AS s
+    WHERE
+      e.`salaryId` = s.`id`
+      AND
+      e.`name` = #{name}
+  </select>
+</mapper>

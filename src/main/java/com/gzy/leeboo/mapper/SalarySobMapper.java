@@ -11,15 +11,11 @@ import java.util.List;
 public interface SalarySobMapper {
     List<SalarySob> getAllSalarySob();
 
-    List<EmployeeSalarySob> getAllEmployeeSalarySobByName(String name);
-
-    List<BasicSalarySob> getAllBasicSalarySob();
+    SalarySob getSalarySobById(Integer id);
 
     Boolean addSalarySob(SalarySob salarySob);
 
     Boolean updateSalarySob(SalarySob salarySob);
-
-    Boolean updateEmployeeSalarySob(Integer salarySobId, Integer employeeId);
 
     Boolean deleteSalarySobById(Integer id);
 

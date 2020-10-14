@@ -1,24 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.gzy.leeboo.mapper.SalaryMapper" >
-  <!-- 根据名称获取指定员工的工资 -->
-  <select id="getSalaryByName" parameterType="string" resultType="com.gzy.leeboo.entity.Salary">
-    SELECT
-        s.*
-    FROM
-        salary AS s,
-        employee_salary AS es,
-        employee AS e
-    WHERE
-        e.`id` = es.`eId`
-        AND
-        s.`id` = es.`sId`
-        AND
-        e.`name` = #{name}
-  </select>
-
   <!-- 添加工资 -->
-  <insert id="addSalary" parameterType="com.gzy.leeboo.entity.SalarySob" >
+  <insert id="addSalary" useGeneratedKeys="true" keyProperty="id" keyColumn="id">
     INSERT INTO
         `salary`(`basicSalary`, `lunchSalary`, `trafficSalary`, `allSalary`, `pensionBase`, `pensionPer`, `medicalBase`,
           `medicalPer`, `accumulationFundBase`, `accumulationFundPer`)
@@ -26,8 +10,8 @@
         #{medicalPer}, #{accumulationFundBase},  #{accumulationFundPer})
   </insert>
 
-  <!-- 修改工资账套 -->
-  <update id="updateSalary" parameterType="com.gzy.leeboo.entity.SalarySob" >
+  <!-- 修改工资 -->
+  <update id="updateSalary">
     UPDATE
         salary
     <set >
@@ -64,30 +48,71 @@
       <if test="accumulationFundPer != null" >
         `accumulationFundPer` = #{accumulationFundPer},
       </if>
-      <if test="createTime != null" >
-        `createTime` = #{createTime}
-      </if>
     </set>
     WHERE
         `id` = #{id}
   </update>
 
-  <!-- 修改奖金 -->
-  <update id="updateSalaryReward" parameterType="integer">
+  <!-- 增加奖金 -->
+  <update id="increaseSalaryReward" parameterType="integer">
     UPDATE
         salary
     SET
-        `reward` = `reward` + #{money}
+        `reward` = `reward` + #{money},
+        `actualSalary` = `actualSalary` + #{money}
     WHERE
         `id` = #{id}
   </update>
 
-  <!-- 修改罚金 -->
-  <update id="updateSalaryPunishment" parameterType="integer">
+  <!-- 减少奖金 -->
+  <update id="decreaseSalaryReward" parameterType="integer">
     UPDATE
         salary
     SET
-        `punishment` = `punishment` + #{money}
+        `reward` = `reward` - #{money},
+        `actualSalary` = `actualSalary` - #{money}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 增加罚金 -->
+  <update id="increaseSalaryPunishment" parameterType="integer">
+    UPDATE
+        salary
+    SET
+        `punishment` = `punishment` + #{money},
+        `actualSalary` = `actualSalary` - #{money}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 减少罚金 -->
+  <update id="decreaseSalaryPunishment" parameterType="integer">
+    UPDATE
+        salary
+    SET
+        `punishment` = `punishment` - #{money},
+        `actualSalary` = `actualSalary` + #{money}
+    WHERE
+        `id` = #{id}
+  </update>
+
+  <!-- 修改员工的工资 -->
+  <update id="updateEmployeeSalary">
+    UPDATE
+        employee
+    SET
+        employee.`salaryId` = #{salaryId}
+    WHERE
+        `id` = #{employeeId}
+  </update>
+
+  <!-- 计算实际工资 -->
+  <update id="computeActualSalary" parameterType="integer">
+    UPDATE
+        salary
+    SET
+        `actualSalary` = `allSalary` + `reward` - `punishment`
     WHERE
         `id` = #{id}
   </update>

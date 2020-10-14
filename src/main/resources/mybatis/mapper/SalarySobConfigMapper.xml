@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.SalarySobConfigMapper" >
+  <resultMap id="EmployeeSalarySobResultMap" type="com.gzy.leeboo.dto.EmployeeSalarySob">
+    <id column="id" property="id"/>
+    <result column="name" property="name"/>
+    <result column="workID" property="workID"/>
+    <result column="email" property="email"/>
+    <result column="phone" property="phone"/>
+    <association property="department" javaType="com.gzy.leeboo.entity.Department">
+      <result column="dName" property="name"/>
+    </association>
+    <association property="salarySob" javaType="com.gzy.leeboo.entity.SalarySob">
+      <id column="sId" property="id"/>
+      <result column="sName" property="name"/>
+      <result column="basicSalary" property="basicSalary"/>
+      <result column="lunchSalary" property="lunchSalary"/>
+      <result column="trafficSalary" property="trafficSalary"/>
+      <result column="allSalary" property="allSalary"/>
+      <result column="pensionBase" property="pensionBase"/>
+      <result column="pensionPer" property="pensionPer"/>
+      <result column="medicalBase" property="medicalBase"/>
+      <result column="medicalPer" property="medicalPer"/>
+      <result column="accumulationFundBase" property="accumulationFundBase"/>
+      <result column="accumulationFundPer" property="accumulationFundPer"/>
+    </association>
+  </resultMap>
+
+  <!-- 获取所有工资账套基础信息 -->
+  <select id="getAllBasicSalarySob" resultType="com.gzy.leeboo.dto.BasicSalarySob">
+    SELECT
+        `id`,
+        `name`
+    FROM
+        salary_sob
+  </select>
+
+  <!-- 获取所有的员工及其工资套账 -->
+  <select id="getAllEmployeeSalarySobByName" parameterType="string" resultMap="EmployeeSalarySobResultMap">
+    SELECT
+    e.`id`,
+    e.`name`,
+    e.`workID`,
+    e.`email`,
+    e.`phone`,
+    d.`name` AS dName,
+    sb.`id` AS sId,
+    sb.`name` AS sName,
+    sb.`basicSalary`,
+    sb.`lunchSalary`,
+    sb.`trafficSalary`,
+    sb.`allSalary`,
+    sb.`pensionBase`,
+    sb.`pensionPer`,
+    sb.`medicalBase`,
+    sb.`medicalPer`,
+    sb.`accumulationFundBase`,
+    sb.`accumulationFundPer`
+    FROM
+    employee AS e
+    LEFT JOIN
+    department AS d
+    ON
+    e.`departmentId` = d.`id`
+    LEFT JOIN
+    salary_sob AS sb
+    ON
+    sb.`id` = e.`salarySobId`
+    <if test="name != null and name.trim() != ''">
+      WHERE
+      e.`name` = #{name}
+    </if>
+    ORDER BY `id`
+  </select>
+
+  <!-- 修改员工的工资账套 -->
+  <update id="updateEmployeeSalarySob">
+    UPDATE
+        employee
+    SET
+        `salarySobId` = #{salarySobId}
+    WHERE
+        `id` = #{employeeId}
+  </update>
+</mapper>

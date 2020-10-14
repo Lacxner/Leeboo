@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.EmployeeMoveMapper">
+  <resultMap id="BasicResultMap" type="com.gzy.leeboo.dto.EmployeeMove">
+    <id property="id" column="id"/>
+    <association property="department" javaType="com.gzy.leeboo.entity.Department">
+      <id property="id" column="dId"/>
+      <result property="name" column="dName"/>
+    </association>
+    <association property="rank" javaType="com.gzy.leeboo.entity.Rank">
+      <id property="id" column="rId"/>
+      <result property="name" column="rName"/>
+    </association>
+    <association property="position" javaType="com.gzy.leeboo.entity.Position">
+      <id property="id" column="pId"/>
+      <result property="name" column="pName"/>
+    </association>
+  </resultMap>
+
+  <!-- 根据姓名获取员工的部门、职位和职称信息 -->
+  <select id="getEmployeeMoveByName" parameterType="string" resultMap="BasicResultMap">
+    SELECT
+        employee.`id`,
+        department.`id` AS dId,
+        department.`name` AS dName,
+        rank.`id` AS rId,
+        rank.`name` AS rName,
+        `position`.`id` AS pId,
+        `position`.`name` AS pName
+    FROM
+        employee,
+        department,
+        rank,
+        `position`
+    WHERE
+        employee.`departmentId` = department.`id`
+        AND employee.`rankId` = rank.`id`
+        AND employee.`positionId` = `position`.`id`
+        AND employee.`name` = #{name}
+  </select>
+
+  <!-- 调动员工 -->
+  <update id="moveEmployee" parameterType="com.gzy.leeboo.dto.EmployeeMove">
+    UPDATE
+        employee
+    SET
+      `departmentId` = #{department.id},
+      `rankId` = #{rank.id},
+      `positionId` = #{position.id}
+    WHERE
+        `id` = #{id}
+  </update>
+</mapper>

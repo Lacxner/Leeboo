@@ -9,14 +9,14 @@ import java.time.LocalDateTime;
  * 工资账套
  */
 public class SalarySob implements Serializable {
-    private static final long serialVersionUID = -6483910677642224889L;
+    private static final long serialVersionUID = -1000267715565480861L;
 
     private Integer id;
     private String name;
     private Integer basicSalary;
     private Integer lunchSalary;
     private Integer trafficSalary;
-    private Integer allSalary;
+    private Double allSalary;
     private Integer pensionBase;
     private Double pensionPer;
     private Integer medicalBase;
@@ -66,11 +66,11 @@ public class SalarySob implements Serializable {
         this.trafficSalary = trafficSalary;
     }
 
-    public Integer getAllSalary() {
+    public Double getAllSalary() {
         return allSalary;
     }
 
-    public void setAllSalary(Integer allSalary) {
+    public void setAllSalary(Double allSalary) {
         this.allSalary = allSalary;
     }
 

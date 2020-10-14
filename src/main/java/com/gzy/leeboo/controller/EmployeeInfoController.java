@@ -98,7 +98,7 @@ public class EmployeeInfoController {
 
     @PutMapping("/updateEmployee")
     public Result updateEmployee(@RequestBody Employee employee) {
-        return employeeService.updateEmployee(employee) ? Result.success().message("更新成功！") : Result.failure().message("更新失败！");
+        return employeeService.updateEmployee(employee) ? Result.success().message("修改成功！") : Result.failure().message("修改失败！");
     }
 
     @DeleteMapping("/deleteEmployeeById/{id}")

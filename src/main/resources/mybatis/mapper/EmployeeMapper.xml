@@ -262,6 +262,16 @@
         `pId` = #{pId}
   </select>
 
+  <!-- 根据员工id获取员工的工资id -->
+  <select id="getSalaryIdById" parameterType="integer" resultType="integer">
+    SELECT
+        `salaryId`
+    FROM
+        employee
+    WHERE
+        `id` = #{id}
+  </select>
+
   <!-- 添加员工 -->
   <insert id="addEmployee" parameterType="com.gzy.leeboo.entity.Employee" useGeneratedKeys="true" keyColumn="id" keyProperty="id">
     INSERT INTO
@@ -324,15 +334,6 @@
       </if>
       <if test="address != null and address.trim() != ''">
         `address` = #{address},
-      </if>
-      <if test="department.id != null">
-        `departmentId` = #{department.id},
-      </if>
-      <if test="rank.id != null">
-        `rankId` = #{rank.id},
-      </if>
-      <if test="position.id != null">
-        `positionId` = #{position.id},
       </if>
       <if test="engageForm != null and engageForm.trim() != ''">
         `engageForm` = #{engageForm},

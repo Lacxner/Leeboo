@@ -8,8 +8,6 @@ import com.gzy.leeboo.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/salary/rewAndPuni")
 public class RewAndPuniController {
@@ -68,27 +66,27 @@ public class RewAndPuniController {
 
     @DeleteMapping("/deleteRewardById/{id}")
     public Result deleteRewardById(@PathVariable("id") Integer id) {
-        return rewAndPuniService.deleteRewardById(id) ? Result.success().message("删除成功！") : Result.failure().message("删除是失败！");
+        if (employeeService.getEmployeeCountsByRewardId(id) > 0) {
+            return Result.failure().message("该奖励已经被员工关联，请先删除员工！");
+        }
+        return rewAndPuniService.deleteRewardById(id) ? Result.success().message("删除成功！") : Result.failure().message("删除失败！");
     }
 
     @DeleteMapping("/deletePunishmentById/{id}")
     public Result deletePunishmentById(@PathVariable("id") Integer id) {
-        return rewAndPuniService.deletePunishmentById(id) ? Result.success().message("删除成功！") : Result.failure().message("删除是失败！");
-    }
-
-    @DeleteMapping("/deleteEmployeeReward/{employeeId}/{rewardId}")
-    public Result deleteEmployeeReward(@PathVariable("employeeId") Integer employeeId, @PathVariable("rewardId") Integer rewardId) {
-        if (employeeService.getEmployeeCountsByRewardId(rewardId) > 0) {
-            return Result.failure().message("该奖励已经被员工关联，请先删除员工！");
-        }
-        return rewAndPuniService.deleteEmployeeReward(employeeId, rewardId) ? Result.success() : Result.failure();
-    }
-
-    @DeleteMapping("/deleteEmployeePunishment/{employeeId}/{punishmentId}")
-    public Result deleteEmployeePunishment(@PathVariable("employeeId") Integer employeeId, @PathVariable("punishmentId") Integer punishmentId) {
-        if (employeeService.getEmployeeCountsByPunishmentId(punishmentId) > 0) {
+        if (employeeService.getEmployeeCountsByPunishmentId(id) > 0) {
             return Result.failure().message("该处罚已经被员工关联，请先删除员工！");
         }
-        return rewAndPuniService.deleteEmployeePunishment(employeeId, punishmentId)  ? Result.success() : Result.failure();
+        return rewAndPuniService.deletePunishmentById(id) ? Result.success().message("删除成功！") : Result.failure().message("删除失败！");
+    }
+
+    @DeleteMapping("/removeEmployeeReward/{employeeId}")
+    public synchronized Result removeEmployeeReward(@PathVariable("employeeId") Integer employeeId, @RequestBody Reward reward) {
+        return rewAndPuniService.removeEmployeeReward(employeeId, reward) ? Result.success() : Result.failure();
+    }
+
+    @DeleteMapping("/removeEmployeePunishment/{employeeId}")
+    public synchronized Result removeEmployeePunishment(@PathVariable("employeeId") Integer employeeId, @RequestBody Punishment punishment) {
+        return rewAndPuniService.removeEmployeePunishment(employeeId, punishment)  ? Result.success() : Result.failure();
     }
 }

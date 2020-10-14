@@ -12,6 +12,10 @@ public interface RewAndPuniMapper {
     
     List<Punishment> getAllPunishments();
 
+    Reward getRewardById(Integer id);
+
+    Punishment getPunishmentById(Integer id);
+
     List<Reward> getRewardsByEmployeeName(String name);
 
     List<Punishment> getPunishmentsByEmployeeName(String name);
