@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gzy.leeboo.mapper.ChartStatisticsMapper">
+  <!-- 获取所有部门的名称 -->
+  <select id="getAllDepartmentNames" resultType="string">
+    SELECT
+        `name`
+    FROM
+        department
+  </select>
+
+  <!-- 获取部门人数统计 -->
+  <select id="getAllDepartmentEmployeeCharts" resultType="com.gzy.leeboo.dto.DepartmentEmployeeChart">
+    SELECT
+      d.`name`,
+      COUNT(1) AS "value"
+    FROM
+      employee AS e,
+      department AS d
+    WHERE
+      e.`departmentId` = d.`id`
+    GROUP BY
+      d.`name`
+  </select>
+
+  <!-- 获取各个部门的最低工资 -->
+  <select id="getDepartmentMinSalary" resultType="double">
+    SELECT
+      MIN(`actualSalary`)
+    FROM
+      employee AS e,
+      department AS d,
+      salary AS s
+    WHERE
+      e.`departmentId` = d.`id`
+      AND
+      e.`salaryId` = s.`id`
+    GROUP BY
+      d.`name`
+  </select>
+
+  <!-- 获取各个部门的最高工资 -->
+  <select id="getDepartmentMaxSalary" resultType="double">
+    SELECT
+      MAX(`actualSalary`)
+    FROM
+      employee AS e,
+      department AS d,
+      salary AS s
+    WHERE
+      e.`departmentId` = d.`id`
+      AND
+      e.`salaryId` = s.`id`
+    GROUP BY
+      d.`name`
+  </select>
+
+  <!-- 获取各个部门的平均工资 -->
+  <select id="getDepartmentAvgSalary" resultType="double">
+    SELECT
+      AVG(`actualSalary`)
+    FROM
+      employee AS e,
+      department AS d,
+      salary AS s
+    WHERE
+      e.`departmentId` = d.`id`
+      AND
+      e.`salaryId` = s.`id`
+    GROUP BY
+      d.`name`
+  </select>
+</mapper>

@@ -11,7 +11,7 @@
     <collection property="children" select="getAllDepartmentsByParentId" javaType="list" ofType="com.gzy.leeboo.entity.Department" column="id"/>
   </resultMap>
 
-  <!-- 根据父id获取部门 -->
+  <!-- 根据父id获取所有部门 -->
   <select id="getAllDepartmentsByParentId" parameterType="integer" resultMap="AllDepartmentsResultMap">
     SELECT
         *
@@ -21,7 +21,7 @@
         `parentId` = #{parentId}
   </select>
 
-  <!-- 获取所有部门，但并构造父子关系 -->
+  <!-- 获取所有部门，但并未构造层级关系 -->
   <select id="getAllBasicDepartments" resultType="com.gzy.leeboo.entity.Department">
     SELECT
         `id`,

@@ -34,7 +34,6 @@ class LeebooApplicationTests extends HttpServlet {
 
     @Test
     void contextLoads() {
-        System.out.println(aliyunOSSConfig.getAccessKeyId());
     }
 
     @Override

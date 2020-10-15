@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gzy.leeboo.mapper.StatisticsMapper">
+  <!-- 获取员工总数 -->
+  <select id="getEmployeeCounts" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        employee
+  </select>
+
+  <!-- 获取当前年新入职的员工总数 -->
+  <select id="getNewEmployeeCounts" parameterType="integer" resultType="integer">
+    <if test="year != null and year > 0">
+      <bind name="yearLike" value="year + '%'"/>
+    </if>
+    SELECT
+      COUNT(1)
+    FROM
+      employee
+    WHERE
+      `beginDate` LIKE #{yearLike};
+  </select>
+
+  <!-- 获取总部门数 -->
+  <select id="getDepartmentCounts" resultType="integer">
+    SELECT
+        COUNT(1)
+    FROM
+        department
+  </select>
+
+  <!-- 获取所有员工的平均工资 -->
+  <select id="getAllEmployeesAvgSalary" resultType="double">
+    SELECT
+      AVG(s.`actualSalary`)
+    FROM
+      employee AS e,
+      salary AS s
+    WHERE
+      e.`salaryId` = s.`id`
+  </select>
+
+  <!-- 修改统计信息 -->
+  <update id="updateStatistics" parameterType="com.gzy.leeboo.entity.Statistics">
+    UPDATE
+        statistics
+    <set>
+      <if test="totalEmp != null and totalEmp > 0">
+        `totalEmp` = #{totalEmp},
+      </if>
+      <if test="newEmp != null and newEmp > 0">
+        `newEmp` = #{newEmp},
+      </if>
+      <if test="totalDep != null and totalDep > 0">
+        `totalDep` = #{totalDep},
+      </if>
+      <if test="avgSalary != null and avgSalary > 0">
+        `avgSalary` = #{avgSalary},
+      </if>
+    </set>
+  </update>
+</mapper>
