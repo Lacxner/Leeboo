@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gzy.leeboo.mapper.NoticeMapper">
+  <!-- 获取通知 -->
+  <select id="getNotice" resultType="com.gzy.leeboo.entity.Notice">
+    SELECT
+        *
+    FROM
+        notice
+    LIMIT 1
+  </select>
+
+  <!-- 修改通知 -->
+  <update id="updateNotice" parameterType="com.gzy.leeboo.entity.Notice">
+    UPDATE
+        notice
+    SET
+        `content` = #{content}
+  </update>
+</mapper>

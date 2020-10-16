@@ -6,11 +6,12 @@ import java.io.Serializable;
  * 系统基本信息
  */
 public class SystemConfig implements Serializable {
-    private static final long serialVersionUID = 5796877356904189453L;
+    private static final long serialVersionUID = -1944152984494710866L;
 
     private Integer id;
     private String version;
     private String company;
+    private Notice notice;
 
     public Integer getId() {
         return id;
@@ -34,5 +35,13 @@ public class SystemConfig implements Serializable {
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public Notice getNotice() {
+        return notice;
+    }
+
+    public void setNotice(Notice notice) {
+        this.notice = notice;
     }
 }
