@@ -1,5 +1,7 @@
 package com.gzy.leeboo.controller;
 
+import com.gzy.leeboo.config.validator.group.UpdateAvatar;
+import com.gzy.leeboo.config.validator.group.UpdateEnabled;
 import com.gzy.leeboo.dto.AuthenticateHr;
 import com.gzy.leeboo.dto.BasicHr;
 import com.gzy.leeboo.dto.ResetPassword;
@@ -21,7 +23,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.io.FileNotFoundException;
 
-@RequestMapping("/system/hr")
+@RequestMapping("/authority/hr")
 @RestController
 public class HrController {
     private HrService hrService;
@@ -66,17 +68,17 @@ public class HrController {
     }
 
     @PutMapping("/updateHrRole")
-    public Result updateHrRole(@RequestBody UpdateHrRole updateHrRole) {
+    public Result updateHrRole(@RequestBody @Validated UpdateHrRole updateHrRole) {
         return roleService.updateHrRole(updateHrRole) ? Result.success().message("修改成功！") : Result.failure().message("修改失败！");
     }
 
     @PutMapping("/updateHr")
-    public Result updateHr(@RequestBody Hr hr) {
+    public Result updateHr(@RequestBody @Validated Hr hr) {
         return hrService.updateHr(hr) ? Result.success().message("修改成功！") : Result.failure().message("修改成功！");
     }
 
     @PutMapping("/updateHrPassword")
-    public Result updateHrPassword(@RequestBody ResetPassword resetPassword) {
+    public Result updateHrPassword(@RequestBody @Validated ResetPassword resetPassword) {
         // 对密码进行盐加密
         BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
         resetPassword.setPassword(bCryptPasswordEncoder.encode(resetPassword.getPassword()));
@@ -84,12 +86,12 @@ public class HrController {
     }
 
     @PutMapping("/updateHrEnabled")
-    public Result updateHrEnabled(@RequestBody BasicHr basicHr) {
+    public Result updateHrEnabled(@RequestBody @Validated(UpdateEnabled.class) BasicHr basicHr) {
         return hrService.updateHrEnabled(basicHr) ? Result.success() : Result.failure().message("修改失败！");
     }
 
     @PutMapping("/updateHrAvatar")
-    public Result updateHrAvatar(@RequestBody BasicHr basicHr) {
+    public Result updateHrAvatar(@RequestBody @Validated(UpdateAvatar.class) BasicHr basicHr) {
         return hrService.updateHrAvatar(basicHr) ? Result.success().message("修改成功！") : Result.failure().message("修改失败！");
     }
 
@@ -99,7 +101,7 @@ public class HrController {
     }
 
     @PostMapping("/upload")
-    public Result upload(@RequestParam("file") MultipartFile file) throws FileNotFoundException {
+    public Result upload(@RequestParam("file") @NotNull MultipartFile file) throws FileNotFoundException {
         if ("".equals(file) || file.getSize() <= 0) {
             throw new FileNotFoundException();
         }

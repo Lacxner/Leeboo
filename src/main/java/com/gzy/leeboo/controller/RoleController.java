@@ -14,7 +14,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
-@RequestMapping("/system/basic")
+@RequestMapping("/authority/role")
 @RestController
 public class RoleController {
     private RoleService roleService;

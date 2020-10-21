@@ -4,6 +4,9 @@ import com.gzy.leeboo.entity.Department;
 import com.gzy.leeboo.entity.Position;
 import com.gzy.leeboo.entity.Rank;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -12,9 +15,14 @@ import java.io.Serializable;
 public class EmployeeMove implements Serializable {
     private static final long serialVersionUID = -215187957532470598L;
 
+    @NotNull
+    @Min(1)
     private Integer id;
+    @Valid
     private Department department;
+    @Valid
     private Rank rank;
+    @Valid
     private Position position;
 
     public Integer getId() {

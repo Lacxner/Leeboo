@@ -1,10 +1,16 @@
 package com.gzy.leeboo.controller;
 
+import com.gzy.leeboo.config.validator.group.UpdateMoveEmployee;
 import com.gzy.leeboo.dto.EmployeeMove;
 import com.gzy.leeboo.service.*;
 import com.gzy.leeboo.utils.Result;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Pattern;
 
 @RestController
 @RequestMapping("/employee/move")
@@ -49,7 +55,8 @@ public class EmployeeMoveController {
     }
 
     @GetMapping("/getEmployeeMoveByName/{name}")
-    public Result getEmployeeMoveByName(@PathVariable("name") String name) {
+    public Result getEmployeeMoveByName(
+            @PathVariable("name") @Length(max = 2) String name) {
         if ("null".equals(name)) {
             name = null;
         }
@@ -60,7 +67,7 @@ public class EmployeeMoveController {
     }
 
     @PutMapping("/moveEmployee")
-    public Result moveEmployee(@RequestBody EmployeeMove employeeMove) {
+    public Result moveEmployee(@RequestBody @Validated(UpdateMoveEmployee.class) EmployeeMove employeeMove) {
         return employeeMoveService.moveEmployee(employeeMove) ? Result.success().message("修改成功！") : Result.failure().message("修改失败！");
     }
 }

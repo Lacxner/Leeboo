@@ -1,8 +1,14 @@
 package com.gzy.leeboo.config.security;
 
+import com.gzy.leeboo.config.security.SMSCode.SMSCodeAuthenticationConfigurer;
+import com.gzy.leeboo.config.security.SMSCode.SMSCodeAuthenticationFilter;
+import com.gzy.leeboo.config.security.SMSCode.SMSCodeAuthenticationProvider;
 import com.gzy.leeboo.service.HrService;
+import com.gzy.leeboo.service.SMSCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,11 +17,14 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@EnableWebSecurity// 用于开启Spring Security的Web安全
+@EnableWebSecurity // 用于开启Spring Security的Web安全
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private HrService hrService;
+    private SMSCodeService smsCodeService;
+    private SMSCodeAuthenticationConfigurer smsCodeAuthenticationConfigurer;
     private CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
     private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
     private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
@@ -28,6 +37,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void setHrService(HrService hrService) {
         this.hrService = hrService;
+    }
+
+    @Autowired
+    public void setSmsCodeService(SMSCodeService smsCodeService) {
+        this.smsCodeService = smsCodeService;
+    }
+
+    @Autowired
+    public void setSmsCodeAuthenticationConfigurer(SMSCodeAuthenticationConfigurer smsCodeAuthenticationConfigurer) {
+        this.smsCodeAuthenticationConfigurer = smsCodeAuthenticationConfigurer;
     }
 
     @Autowired
@@ -88,6 +107,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticationEntryPoint(customAuthenticationEntryPoint)
                 .accessDeniedHandler(customAccessDeniedHandler);
 
+        // 配置短信验证码登录
+        http.apply(smsCodeAuthenticationConfigurer);
+
         // 配置认证和授权规则
         http.authorizeRequests()
                 .withObjectPostProcessor(new ObjectPostProcessor<FilterSecurityInterceptor>() {
@@ -98,24 +120,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         return object;
                     }
                 })
-                .antMatchers("/druid/**").permitAll()
-                .anyRequest().authenticated()// 表示所有请求都要认证和授权
+                .antMatchers("/login/**")
+                .permitAll()
+                .and()
+                .authorizeRequests()
+                .anyRequest()
+                .authenticated() // 表示所有请求都要认证和授权
                 .and()
                 .formLogin()
-                .loginProcessingUrl("/login")// 登录处理url
-                .successHandler(customAuthenticationSuccessHandler)// 设置自定义认证成功处理器
-                .failureHandler(customAuthenticationFailureHandler)// 设置自定义认证失败处理器
+                .loginProcessingUrl("/login") // 登录处理url
+                .successHandler(customAuthenticationSuccessHandler) // 设置自定义认证成功处理器
+                .failureHandler(customAuthenticationFailureHandler) // 设置自定义认证失败处理器
                 .permitAll();
+
+        // 配置记住我
+        http.rememberMe()
+                .authenticationSuccessHandler(customAuthenticationSuccessHandler);
 
         // 配置Session
         http.sessionManagement()
-                .invalidSessionStrategy(customInvalidSessionStrategy);// Session失效策略
+                .invalidSessionStrategy(customInvalidSessionStrategy); // Session失效策略
 
         // 配置注销处理规则
         http.logout()
-                .invalidateHttpSession(true)
-                .logoutUrl("/logout")// 注销处理url
-                .logoutSuccessHandler(customLogoutSuccessHandler)// 设置自定义注销成功处理器
+                .logoutUrl("/logout") // 注销处理url
+                .deleteCookies("JSESSIONID") // 注销后清除浏览器的登录Cookie
+                .logoutSuccessHandler(customLogoutSuccessHandler) // 设置自定义注销成功处理器
                 .permitAll();
 
         // 关闭Csrf

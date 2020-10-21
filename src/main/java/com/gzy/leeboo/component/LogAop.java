@@ -1,6 +1,5 @@
 package com.gzy.leeboo.component;
 
-import com.gzy.leeboo.controller.ChatController;
 import com.gzy.leeboo.controller.MenuController;
 import com.gzy.leeboo.entity.Hr;
 import com.gzy.leeboo.entity.Log;
@@ -25,7 +24,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
 /**
- * 使用AOP实现的系统日志记录，排除了 {@link MenuController} 和 {@link ChatController} 控制器中的所有方法。
+ * 使用AOP实现的系统日志记录，排除了 {@link MenuController} 控制器中的所有方法。
  */
 @Component
 @Aspect
@@ -52,9 +51,7 @@ public class LogAop {
     public void deletePointcut() {}
     @Pointcut("!execution(* com.gzy.leeboo.controller.MenuController.*(..))")
     public void exceptMenu() {}
-    @Pointcut("!execution(* com.gzy.leeboo.controller.ChatController.*(..))")
-    public void exceptChat() {}
-    @Pointcut("(addPointcut() || updatePointcut() || deletePointcut()) && exceptMenu() && exceptChat()")
+    @Pointcut("(addPointcut() || updatePointcut() || deletePointcut()) && exceptMenu()")
     public void finalPointcut() {}
 
     @Before("finalPointcut()")

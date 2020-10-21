@@ -1,5 +1,10 @@
 package com.gzy.leeboo.entity;
 
+import com.gzy.leeboo.config.validator.group.AddEmployee;
+import com.gzy.leeboo.config.validator.group.Update;
+
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
@@ -8,6 +13,8 @@ import java.io.Serializable;
 public class Politics implements Serializable {
     private static final long serialVersionUID = -7895655658178562833L;
 
+    @NotNull(groups = { AddEmployee.class, Update.class })
+    @Min(value = 1, groups = { AddEmployee.class, Update.class })
     private Integer id;
     private String name;
 

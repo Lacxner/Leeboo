@@ -6,6 +6,7 @@ import com.gzy.leeboo.entity.Log;
 import com.gzy.leeboo.service.LogService;
 import com.gzy.leeboo.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,7 +33,7 @@ public class LogController {
     }
 
     @PostMapping("/addLog")
-    public Result addLog(Log Log) {
+    public Result addLog(@Validated Log Log) {
         return LogService.addLog(Log) ? Result.success().message("添加成功！") : Result.failure().message("添加失败！");
     }
 

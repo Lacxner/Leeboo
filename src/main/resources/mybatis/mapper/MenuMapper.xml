@@ -137,7 +137,7 @@
   <!-- 添加角色所有拥有的菜单 -->
   <insert id="addRoleMenu">
     INSERT INTO
-    `menu_role`(`mId`, `rId`)
+        `menu_role`(`mId`, `rId`)
     VALUES
     <foreach collection="menuIds" item="menuId" separator=",">
       (#{menuId}, #{roleId})
@@ -162,66 +162,4 @@
         #{roleId}
     </foreach>
   </delete>
-
-  <!-- 根据id获取菜单 -->
-<!--  <select id="getMenuById" parameterType="integer" resultMap="BasicMenuResultMap">-->
-<!--    SELECT-->
-<!--        *-->
-<!--    FROM-->
-<!--        menu-->
-<!--    WHERE-->
-<!--        `id` = #{id}-->
-<!--  </select>-->
-
-  <!-- 根据id删除菜单 -->
-<!--  <delete id="deleteMenuById" parameterType="integer" >-->
-<!--    DELETE FROM-->
-<!--        menu-->
-<!--    WHERE-->
-<!--        `id` = #{id}-->
-<!--  </delete>-->
-
-  <!-- 添加菜单 -->
-<!--  <insert id="addMenu" parameterType="com.gzy.leeboo.entity.Menu" >-->
-<!--    INSERT INTO-->
-<!--        menu(`id`, `url`, `path`, `component`, `name`, `icon`, `keepAlive`, `requireAuth`, `parentId`, `enabled`)-->
-<!--    VALUES(#{id}, #{url}, #{path}, #{component}, #{name}, #{icon}, #{meta.keepAlive}, #{meta.requireAuth}, #{parentId}, #{enabled})-->
-<!--  </insert>-->
-
-  <!-- 修改菜单 -->
-<!--  <update id="updateMenu" parameterType="com.gzy.leeboo.entity.Menu" >-->
-<!--    UPDATE-->
-<!--        menu-->
-<!--    <set >-->
-<!--      <if test="url != null and url.trim() != ''" >-->
-<!--        `url` = #{url},-->
-<!--      </if>-->
-<!--      <if test="path != null and path.trim() != ''" >-->
-<!--        `path` = #{path},-->
-<!--      </if>-->
-<!--      <if test="component != null and component.trim() != ''" >-->
-<!--        `component` = #{component},-->
-<!--      </if>-->
-<!--      <if test="name != null and name.trim() != ''" >-->
-<!--        `name` = #{name},-->
-<!--      </if>-->
-<!--      <if test="icon != null and icon.trim() != ''" >-->
-<!--        `icon` = #{icon},-->
-<!--      </if>-->
-<!--      <if test="meta.keepAlive != null" >-->
-<!--        `keepAlive` = #{meta.keepAlive},-->
-<!--      </if>-->
-<!--      <if test="meta.requireAuth != null" >-->
-<!--        `requireAuth` = #{meta.requireAuth},-->
-<!--      </if>-->
-<!--      <if test="parentId != null" >-->
-<!--        `parentId` = #{parentId},-->
-<!--      </if>-->
-<!--      <if test="enabled != null" >-->
-<!--        `enabled` = #{enabled},-->
-<!--      </if>-->
-<!--    </set>-->
-<!--    WHERE-->
-<!--        `id` = #{id}-->
-<!--  </update>-->
 </mapper>

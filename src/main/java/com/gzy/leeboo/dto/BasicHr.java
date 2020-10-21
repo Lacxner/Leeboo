@@ -1,8 +1,12 @@
 package com.gzy.leeboo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gzy.leeboo.config.validator.group.UpdateAvatar;
+import com.gzy.leeboo.config.validator.group.UpdateEnabled;
 import com.gzy.leeboo.entity.Role;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,15 +18,18 @@ import java.util.List;
 public class BasicHr implements Serializable{
     private static final long serialVersionUID = 6162501809148417979L;
 
+    @NotNull
+    @Min(1)
     private Integer id;
     private String name;
     private String phone;
     private String qq;
     private String address;
+    @NotNull(groups = UpdateEnabled.class)
     private Boolean enabled;
+    @NotBlank(groups = UpdateAvatar.class)
     private String avatar;
     private String remark;
-    @NotNull
     private List<Role> roles;
     @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime createTime;

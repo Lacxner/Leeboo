@@ -27,9 +27,10 @@ public class GlobalExceptionHandler{
     public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException methodArgumentNotValidException) {
         BindingResult bindingResult = methodArgumentNotValidException.getBindingResult();
         FieldError fieldError = bindingResult.getFieldError();
+        // 获取默认的错误信息
         String defaultMessage = fieldError.getDefaultMessage();
-        LOGGER.warn("可能是非法请求，不合法属性[" + defaultMessage + "]");
-        return Result.failure().message("错误");
+        LOGGER.warn("【警告】可能是非法请求，不合法属性[" + defaultMessage + "]");
+        return Result.failure().message("非法方法参数");
     }
 
     /**
@@ -38,8 +39,9 @@ public class GlobalExceptionHandler{
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public Result handleConstraintViolationException(ConstraintViolationException constraintViolationException) {
+        // 获取约束异常信息
         String message = constraintViolationException.getMessage();
-        LOGGER.warn("可能是非法请求，错误原因[" + message + "]");
+        LOGGER.warn("【警告】可能是非法请求，错误原因[" + message + "]");
         return Result.failure().message(message);
     }
 }

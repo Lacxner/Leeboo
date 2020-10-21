@@ -1,8 +1,8 @@
 package com.gzy.leeboo.controller;
 
-import com.gzy.leeboo.config.validation.groups.Add;
-import com.gzy.leeboo.config.validation.groups.Update;
-import com.gzy.leeboo.config.validation.groups.UpdateEnabled;
+import com.gzy.leeboo.config.validator.group.Add;
+import com.gzy.leeboo.config.validator.group.Update;
+import com.gzy.leeboo.config.validator.group.UpdateEnabled;
 import com.gzy.leeboo.entity.Rank;
 import com.gzy.leeboo.service.EmployeeService;
 import com.gzy.leeboo.service.RankService;
@@ -12,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class RankController {
     }
 
     @DeleteMapping("/deleteBatchRankByIds")
-    public Result deleteBatchRankByIds(@RequestBody @NotNull List<Integer> ids) {
+    public Result deleteBatchRankByIds(@RequestBody @NotEmpty List<Integer> ids) {
         if (employeeService.getEmployeeCountsByRankIds(ids) > 0) {
             return Result.failure().message("其中的某个职称已经被员工关联，请先删除员工！");
         }

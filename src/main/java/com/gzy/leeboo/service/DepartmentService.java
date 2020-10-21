@@ -57,7 +57,7 @@ public class DepartmentService {
         department.setPath(parentPath + "." + department.getId());
 
         // 修改部门路径
-        if (!departmentMapper.updateDepartmentPath(department) | !departmentMapper.updateDepartmentIsParent(department.getParentId(), true)) {
+        if (!departmentMapper.updateDepartmentPath(department) || !departmentMapper.updateDepartmentIsParent(department.getParentId(), true)) {
             return false;
         }
         return true;

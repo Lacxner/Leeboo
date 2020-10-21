@@ -58,14 +58,24 @@
         hr.`username` = #{username}
   </select>
 
-  <!-- 获取除自己以外的所有Hr -->
-  <select id="getAllHrsWithoutMyself" parameterType="integer" resultType="com.gzy.leeboo.dto.ChatHr">
+  <!-- 根据手机号码获取Hr -->
+  <select id="getHrByPhone" parameterType="string" resultMap="HrWithRolesResultMap">
     SELECT
-        *
+      hr.*,
+      `role`.`id` AS rId,
+      `role`.`name` AS rName,
+      `role`.`nameZh`,
+      `role`.`createTime`
     FROM
-        hr
+      hr,
+      hr_role,
+      `role`
     WHERE
-        `id` != #{id}
+        hr.`id` = hr_role.`hrId`
+      AND
+        hr_role.`rId` = `role`.`id`
+      AND
+        hr.`phone` = #{phone}
   </select>
 
   <!-- 查询Hr及其所有拥有角色的基础SQL -->
@@ -178,6 +188,7 @@
         `id` = #{id}
   </update>
 
+  <!-- 修改Hr头像图片地址 -->
   <update id="updateHrAvatar" parameterType="com.gzy.leeboo.dto.BasicHr">
     UPDATE
         hr

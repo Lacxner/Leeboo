@@ -1,10 +1,12 @@
 package com.gzy.leeboo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gzy.leeboo.config.validator.annotation.Phone;
 import com.gzy.leeboo.entity.Department;
 import com.gzy.leeboo.entity.Position;
 import com.gzy.leeboo.entity.Rank;
 
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDate;
 
@@ -15,8 +17,10 @@ public class SearchEmployee implements Serializable {
     private static final long serialVersionUID = 5221925098112956442L;
 
     private Integer id;
+    @Pattern(regexp = "^[\u4e00-\u9fa5]{2,5}$", message = "员工姓名格式不正确！")
     private String name;
     private String workID;
+    @Phone
     private String phone;
     private Department department;
     private Rank rank;

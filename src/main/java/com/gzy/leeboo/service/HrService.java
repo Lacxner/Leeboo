@@ -2,12 +2,12 @@ package com.gzy.leeboo.service;
 
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.gzy.leeboo.config.aliyunoss.AliyunOSSConfig;
+import com.gzy.leeboo.config.aliyun.AliyunOSS;
 import com.gzy.leeboo.dto.AuthenticateHr;
 import com.gzy.leeboo.dto.BasicHr;
-import com.gzy.leeboo.dto.ChatHr;
 import com.gzy.leeboo.dto.ResetPassword;
 import com.gzy.leeboo.entity.Hr;
+import com.gzy.leeboo.exception.PhoneNotFoundException;
 import com.gzy.leeboo.mapper.HrMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheConfig;
@@ -27,7 +27,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -36,16 +35,10 @@ import java.util.List;
 @Service
 public class HrService implements UserDetailsService {
     private HrMapper hrMapper;
-    private AliyunOSSConfig aliyunOSSConfig;
 
     @Autowired
     public void setHrMapper(HrMapper hrMapper){
         this.hrMapper = hrMapper;
-    }
-
-    @Autowired
-    public void setAliyunOSSConfig(AliyunOSSConfig aliyunOSSConfig) {
-        this.aliyunOSSConfig = aliyunOSSConfig;
     }
 
     @Override
@@ -54,6 +47,14 @@ public class HrService implements UserDetailsService {
         // 这里的 UsernameNotFoundException 默认会被封装成 BadCredentialsException 异常，最终被 ExceptionTranslationFilter 拦截处理
         if (hr == null) {
             throw new UsernameNotFoundException("用户名或密码错误！");
+        }
+        return hr;
+    }
+
+    public UserDetails loadUserByPhone(String phone) throws PhoneNotFoundException {
+        Hr hr = hrMapper.getHrByPhone(phone);
+        if (hr == null) {
+            throw new PhoneNotFoundException("手机号码不存在！");
         }
         return hr;
     }
@@ -73,10 +74,6 @@ public class HrService implements UserDetailsService {
 
     public Integer getHrCountsByRoleIds(List<Integer> roleIds) {
         return hrMapper.getHrCountsByRoleIds(roleIds);
-    }
-
-    public List<ChatHr> getAllHrsWithoutMyself(Integer id) {
-        return hrMapper.getAllHrsWithoutMyself(id);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, isolation = Isolation.REPEATABLE_READ)
@@ -122,7 +119,7 @@ public class HrService implements UserDetailsService {
      */
     public String upload(MultipartFile file) {
         // 创建OSSClient实例
-        OSS ossClient = new OSSClientBuilder().build(aliyunOSSConfig.getEndpoint(), aliyunOSSConfig.getAccessKeyId(), aliyunOSSConfig.getAccessKeySecret());
+        OSS ossClient = new OSSClientBuilder().build(AliyunOSS.endpoint, AliyunOSS.accessKeyId, AliyunOSS.accessKeySecret);
         InputStream inputStream = null;
         // 头像的访问URL
         String fileUrl = null;
@@ -135,21 +132,21 @@ public class HrService implements UserDetailsService {
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             if (authentication != null && !(authentication instanceof AnonymousAuthenticationToken)) {
                 Hr hr = (Hr) authentication.getPrincipal();
-                objectName = aliyunOSSConfig.getUrl() + "/" + hr.getUsername() + "/" + instant + "-" + file.getOriginalFilename();
+                objectName = AliyunOSS.url + "/" + hr.getUsername() + "/" + instant + "-" + file.getOriginalFilename();
                 // 上传文件流
-                ossClient.putObject(aliyunOSSConfig.getBucketName(),  objectName, inputStream);
+                ossClient.putObject(AliyunOSS.bucketName,  objectName, inputStream);
                 // 添加后删除原有头像
                 String avatarUrl = hrMapper.getAvatarById(hr.getId());
                 String originalFilename = avatarUrl.substring(avatarUrl.lastIndexOf("/") + 1);
-                String originalObjectName = aliyunOSSConfig.getUrl() + "/" + hr.getUsername() + "/" + originalFilename;
-                if (ossClient.doesObjectExist(aliyunOSSConfig.getBucketName(), originalObjectName)) {
-                    ossClient.deleteObject(aliyunOSSConfig.getBucketName(), originalObjectName);
+                String originalObjectName = AliyunOSS.url + "/" + hr.getUsername() + "/" + originalFilename;
+                if (ossClient.doesObjectExist(AliyunOSS.bucketName, originalObjectName)) {
+                    ossClient.deleteObject(AliyunOSS.bucketName, originalObjectName);
                 }
             } else {
-                objectName = aliyunOSSConfig.getUrl() + "/" + instant + "-" + file.getOriginalFilename();
-                ossClient.putObject(aliyunOSSConfig.getBucketName(),  objectName, inputStream);
+                objectName = AliyunOSS.url + "/" + instant + "-" + file.getOriginalFilename();
+                ossClient.putObject(AliyunOSS.bucketName,  objectName, inputStream);
             }
-            fileUrl = "http://" + aliyunOSSConfig.getBucketName() + "." +aliyunOSSConfig.getEndpoint() + "/" + objectName;
+            fileUrl = "http://" + AliyunOSS.bucketName + "." + AliyunOSS.endpoint + "/" + objectName;
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

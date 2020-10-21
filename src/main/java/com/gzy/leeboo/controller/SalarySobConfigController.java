@@ -8,6 +8,9 @@ import com.gzy.leeboo.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 
 @RequestMapping("/salary/sobConfig")
@@ -21,7 +24,10 @@ public class SalarySobConfigController {
     }
 
     @GetMapping("/getAllEmployeeSalarySobByName/{name}/{currentPage}/{pageSize}")
-    public Result getAllEmployeeSalarySobByName(@PathVariable("name") String name, @PathVariable("currentPage") Integer currentPage, @PathVariable("pageSize") Integer pageSize) {
+    public Result getAllEmployeeSalarySobByName(
+            @PathVariable("name") @Pattern(regexp = "^[\\u4e00-\\u9fa5]{2,5}$", message = "员工姓名格式不正确！") String name,
+            @PathVariable("currentPage") @NotNull @Min(1) Integer currentPage,
+            @PathVariable("pageSize") @NotNull @Min(1) Integer pageSize) {
         if ("null".equals(name)) {
             name = null;
         }
@@ -37,7 +43,9 @@ public class SalarySobConfigController {
     }
 
     @PutMapping("/updateEmployeeSalarySob/{salarySobId}/{employeeId}")
-    public Result updateEmployeeSalarySob(@PathVariable("salarySobId") Integer salarySobId, @PathVariable("employeeId") Integer employeeId) {
+    public Result updateEmployeeSalarySob(
+            @PathVariable("salarySobId") @NotNull @Min(1) Integer salarySobId,
+            @PathVariable("employeeId") @NotNull @Min(1) Integer employeeId) {
         return salarySobConfigService.updateEmployeeSalarySob(salarySobId, employeeId) ? Result.success().message("修改成功！") : Result.failure().message("修改失败！");
     }
 }

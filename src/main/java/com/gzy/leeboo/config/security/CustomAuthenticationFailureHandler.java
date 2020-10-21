@@ -1,6 +1,8 @@
 package com.gzy.leeboo.config.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gzy.leeboo.exception.BadSMSCodeCredentialsException;
+import com.gzy.leeboo.exception.SMSCodeExpiredException;
 import com.gzy.leeboo.utils.Result;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -33,20 +35,24 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         try {
             writer = response.getWriter();
             String jsonResult;
-            if(exception instanceof BadCredentialsException){
+            if (exception instanceof BadCredentialsException) {
                 jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("用户名或密码错误！"));
-            }else if(exception instanceof LockedException){
+            } else if (exception instanceof SMSCodeExpiredException) {
+                jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("短信验证码已过期！"));
+            } else if (exception instanceof BadSMSCodeCredentialsException) {
+                jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("短信验证码错误！"));
+            } else if (exception instanceof LockedException) {
                 jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("账户已被锁定！"));
-            }else if(exception instanceof DisabledException){
+            } else if (exception instanceof DisabledException) {
                 jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("账户已被禁用！"));
-            }else{
+            } else {
                 jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("登录失败，未知错误！"));
             }
             writer.write(jsonResult);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if(writer != null) writer.close();
+            if (writer != null) writer.close();
         }
     }
 }

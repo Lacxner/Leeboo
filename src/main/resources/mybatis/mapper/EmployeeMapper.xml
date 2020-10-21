@@ -347,9 +347,6 @@
       <if test="specialty != null and specialty.trim() != ''">
         `specialty` = #{specialty},
       </if>
-      <if test="workID != null and workID.trim() != ''">
-        `workID` = #{workID},
-      </if>
       <if test="workState != null and workState.trim() != ''">
         `workState` = #{workState},
       </if>

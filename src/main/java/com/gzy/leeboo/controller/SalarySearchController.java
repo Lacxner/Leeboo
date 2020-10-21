@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.constraints.Pattern;
+
 @RestController
 @RequestMapping("/salary/search")
 public class SalarySearchController {
@@ -29,7 +31,9 @@ public class SalarySearchController {
     }
 
     @GetMapping("/getSalaryByEmployeeName/{name}")
-    public Result getSalaryByEmployeeName(@PathVariable("name") String name) {
+    public Result getSalaryByEmployeeName(
+            @PathVariable("name")
+            @Pattern(regexp = "^[\\u4e00-\\u9fa5]{2,5}$", message = "员工姓名格式不正确！") String name) {
         if ("null".equals(name)) {
             name = null;
         }

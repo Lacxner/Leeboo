@@ -1,7 +1,11 @@
 package com.gzy.leeboo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gzy.leeboo.config.validator.group.Add;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -11,17 +15,39 @@ import java.time.LocalDateTime;
 public class SalarySob implements Serializable {
     private static final long serialVersionUID = -1000267715565480861L;
 
+    @NotNull(groups = Add.class)
+    @Min(value = 1, groups = Add.class)
     private Integer id;
+    @NotNull
+    @Pattern(regexp = "^[\\w_-（）\\u4e00-\\u9fa5]{2,12}$", message = "工资账套名称格式不正确！")
     private String name;
+    @NotNull
+    @Min(0)
     private Integer basicSalary;
+    @NotNull
+    @Min(0)
     private Integer lunchSalary;
+    @NotNull
+    @Min(0)
     private Integer trafficSalary;
     private Double allSalary;
+    @NotNull
+    @Min(0)
     private Integer pensionBase;
+    @NotNull
+    @Min(0)
     private Double pensionPer;
+    @NotNull
+    @Min(0)
     private Integer medicalBase;
+    @NotNull
+    @Min(0)
     private Double medicalPer;
+    @NotNull
+    @Min(0)
     private Integer accumulationFundBase;
+    @NotNull
+    @Min(0)
     private Double accumulationFundPer;
     @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime createTime;

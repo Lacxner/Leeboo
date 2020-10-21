@@ -2,6 +2,10 @@ package com.gzy.leeboo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -12,13 +16,23 @@ public class Log implements Serializable {
     private static final long serialVersionUID = 48960034333590793L;
 
     private Integer id;
+    @NotBlank
     private String method;
+    @NotBlank
     private String pattern;
+    @NotBlank
     private String url;
+    @NotNull
+    @Pattern(regexp = "^\\w{4,12}$", message = "用户名格式不正确！")
     private String username;
+    @NotNull
+    @Pattern(regexp = "^((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})(\\.((2(5[0-5]|[0-4]\\d))|[0-1]?\\d{1,2})){3}$", message = "IP地址格式不正确！")
     private String ip;
+    @NotNull
     @JsonFormat(pattern = "yyyy年MM月dd月 HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime visitTime;
+    @NotNull
+    @Min(1)
     private Long executionTime;
 
     public Log() {}

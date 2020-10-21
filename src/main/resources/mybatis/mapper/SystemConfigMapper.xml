@@ -14,10 +14,7 @@
   <update id="updateSystemConfig" parameterType="com.gzy.leeboo.entity.SystemConfig">
     UPDATE
         system_config
-    <set>
-      <if test="company != null and company.trim() != ''">
+    SET
         `company` = #{company}
-      </if>
-    </set>
   </update>
 </mapper>

@@ -1,13 +1,12 @@
 package com.gzy.leeboo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gzy.leeboo.config.validation.groups.Add;
-import com.gzy.leeboo.config.validation.groups.UpdateEnabled;
-import com.gzy.leeboo.config.validation.groups.UpdateName;
+import com.gzy.leeboo.config.validator.group.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -17,17 +16,14 @@ import java.time.LocalDateTime;
 public class Position implements Serializable {
     private static final long serialVersionUID = -8410283570553143765L;
 
-    @NotNull(groups = {UpdateName.class, UpdateEnabled.class})
-    @Min(value = 1, groups = {UpdateName.class, UpdateEnabled.class})
+    @NotNull(groups = {AddEmployee.class, UpdateMoveEmployee.class, UpdateName.class, UpdateEnabled.class})
+    @Min(value = 1, groups = {AddEmployee.class, UpdateMoveEmployee.class, UpdateName.class, UpdateEnabled.class})
     private Integer id;
-
     @NotNull(groups = {UpdateName.class, Add.class})
-    @Length(min = 2, max = 16, groups = {UpdateName.class, Add.class})
+    @Pattern(regexp = "^[\\w_-（）\\u4e00-\\u9fa5]{2,12}$", groups = {UpdateName.class, Add.class}, message = "职位名称格式不正确！")
     private String name;
-
     @NotNull(groups = UpdateEnabled.class)
     private Boolean enabled;
-
     @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss", timezone = "Asia/Shanghai")
     private LocalDateTime createTime;
 

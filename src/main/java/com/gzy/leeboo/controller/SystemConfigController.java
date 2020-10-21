@@ -6,6 +6,7 @@ import com.gzy.leeboo.service.NoticeService;
 import com.gzy.leeboo.service.SystemConfigService;
 import com.gzy.leeboo.utils.Result;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,7 +33,7 @@ public class SystemConfigController {
     }
 
     @PutMapping("/updateSystemConfig")
-    public Result updateSystemConfig(@RequestBody SystemConfig systemConfig) {
+    public Result updateSystemConfig(@RequestBody @Validated SystemConfig systemConfig) {
         return systemConfigService.updateSystemConfig(systemConfig) ? Result.success().message("修改成功！") : Result.failure().message("修改失败！");
     }
 }

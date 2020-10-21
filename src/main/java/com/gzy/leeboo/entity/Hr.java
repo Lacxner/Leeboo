@@ -1,10 +1,15 @@
 package com.gzy.leeboo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.gzy.leeboo.config.validator.annotation.Phone;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -12,20 +17,32 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * 登录Hr用户
+ * HR用户
  */
 public class Hr implements UserDetails, Serializable {
     private static final long serialVersionUID = 5652835615501269325L;
 
+    @NotNull
+    @Min(1)
     private Integer id;
+    @NotNull
+    @Pattern(regexp = "^[\\w_-（）\\u4e00-\\u9fa5]{2,12}$", message = "HR姓名格式不正确！")
     private String name;
+    @NotNull
+    @Phone(message = "HR手机号码格式不正确！")
     private String phone;
+    @NotNull
+    @Pattern(regexp = "^\\d{5,16}$", message = "QQ号码格式不正确！")
     private String qq;
+    @NotNull
+    @Pattern(regexp = "^[\\w（）\\u4e00-\\u9fa5]{4,24}$", message = "HR地址格式不正确！")
     private String address;
     private Boolean enabled;
     private String username;
     private String password;
     private String avatar;
+    @NotNull
+    @Length(min = 1, max = 30)
     private String remark;
     private List<Role> roles;
     @JsonFormat(pattern = "yyyy年MM月dd日 HH:mm:ss", timezone = "Asia/Shanghai")

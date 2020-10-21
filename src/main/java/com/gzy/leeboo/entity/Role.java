@@ -1,8 +1,8 @@
 package com.gzy.leeboo.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.gzy.leeboo.config.validation.groups.Add;
-import com.gzy.leeboo.config.validation.groups.Update;
+import com.gzy.leeboo.config.validator.group.Add;
+import com.gzy.leeboo.config.validator.group.Update;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Min;

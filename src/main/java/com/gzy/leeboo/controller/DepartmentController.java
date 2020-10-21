@@ -1,5 +1,6 @@
 package com.gzy.leeboo.controller;
 
+import com.gzy.leeboo.config.validator.group.Add;
 import com.gzy.leeboo.entity.Department;
 import com.gzy.leeboo.service.DepartmentService;
 import com.gzy.leeboo.service.EmployeeService;
@@ -9,6 +10,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class DepartmentController {
     }
 
     @PostMapping("/addDepartment")
-    public Result addDepartment(@RequestBody @Validated Department department) {
+    public Result addDepartment(@RequestBody @Validated(Add.class) Department department) {
         return departmentService.addDepartment(department) ? Result.success().message("添加成功！") : Result.success().message("添加失败！");
     }
 
@@ -48,7 +50,7 @@ public class DepartmentController {
     }
 
     @DeleteMapping("/deleteBatchDepartmentByIds/{parentId}")
-    public Result deleteBatchDepartmentByIds(@RequestBody @NotNull List<Integer> ids, @Min(1) @NotNull @PathVariable("parentId") Integer parentId) {
+    public Result deleteBatchDepartmentByIds(@RequestBody @NotEmpty List<Integer> ids, @Min(1) @NotNull @PathVariable("parentId") Integer parentId) {
         if (employeeService.getEmployeeCountsByDepartmentIds(ids) > 0) {
             return Result.failure().message("其中的某个部门已经被员工关联，请先删除员工！");
         }
