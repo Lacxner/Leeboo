@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * HR用户
@@ -172,20 +173,15 @@ public class Hr implements UserDetails, Serializable {
     }
 
     @Override
-    public String toString() {
-        return "Hr{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", phone='" + phone + '\'' +
-                ", qq='" + qq + '\'' +
-                ", address='" + address + '\'' +
-                ", enabled=" + enabled +
-                ", username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", avatar='" + avatar + '\'' +
-                ", remark='" + remark + '\'' +
-                ", roles=" + roles +
-                ", createTime=" + createTime +
-                '}';
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hr hr = (Hr) o;
+        return Objects.equals(username, hr.username) && Objects.equals(password, hr.password);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, password);
     }
 }

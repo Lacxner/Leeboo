@@ -11,6 +11,7 @@ import org.springframework.security.authentication.LockedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.session.SessionAuthenticationException;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,8 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
                 jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("短信验证码已过期！"));
             } else if (exception instanceof BadSMSCodeCredentialsException) {
                 jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("短信验证码错误！"));
+            } else if (exception instanceof SessionAuthenticationException) {
+                jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("当前账户已经登录！"));
             } else if (exception instanceof LockedException) {
                 jsonResult = new ObjectMapper().writeValueAsString(Result.failure().message("账户已被锁定！"));
             } else if (exception instanceof DisabledException) {

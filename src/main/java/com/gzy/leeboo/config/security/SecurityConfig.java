@@ -1,14 +1,11 @@
 package com.gzy.leeboo.config.security;
 
 import com.gzy.leeboo.config.security.SMSCode.SMSCodeAuthenticationConfigurer;
-import com.gzy.leeboo.config.security.SMSCode.SMSCodeAuthenticationFilter;
-import com.gzy.leeboo.config.security.SMSCode.SMSCodeAuthenticationProvider;
 import com.gzy.leeboo.service.HrService;
 import com.gzy.leeboo.service.SMSCodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.ObjectPostProcessor;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,7 +14,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.session.HttpSessionEventPublisher;
+
+import javax.servlet.http.HttpSessionListener;
 
 @EnableWebSecurity // 用于开启Spring Security的Web安全
 @Configuration
@@ -120,8 +119,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         return object;
                     }
                 })
-                .antMatchers("/login/**")
-                .permitAll()
                 .and()
                 .authorizeRequests()
                 .anyRequest()
@@ -139,7 +136,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 配置Session
         http.sessionManagement()
-                .invalidSessionStrategy(customInvalidSessionStrategy); // Session失效策略
+                .invalidSessionStrategy(customInvalidSessionStrategy) // Session失效策略
+                .maximumSessions(1) // 一个用户所允许的最大的Session数
+                .maxSessionsPreventsLogin(true); // 当某个用户达到最大Session数时阻止其登录
 
         // 配置注销处理规则
         http.logout()
@@ -150,5 +149,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 关闭Csrf
         http.csrf().disable();
+    }
+
+    @Bean
+    public HttpSessionEventPublisher httpSessionEventPublisher () {
+        return new HttpSessionEventPublisher();
     }
 }

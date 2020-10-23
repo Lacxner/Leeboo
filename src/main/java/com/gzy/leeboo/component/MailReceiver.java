@@ -6,7 +6,10 @@ import com.gzy.leeboo.entity.SystemConfig;
 import com.gzy.leeboo.service.SystemConfigService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
+import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.rabbit.annotation.RabbitListeners;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.mail.MailProperties;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -56,8 +59,12 @@ public class MailReceiver {
         this.systemConfigService = systemConfigService;
     }
 
+    /**
+     * 处理欢迎入职邮件的消息
+     * @param employee 新入职员工的信息
+     */
     @RabbitListener(queues = "mail.welcome")
-    public void handle(Employee employee) {
+    public void handleWelcomeMail(Employee employee) {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage);
@@ -97,4 +104,13 @@ public class MailReceiver {
             LOGGER.error("邮件发送失败！");
         }
     }
+
+//    /**
+//     * 处理员工调动邮件的消息
+//     * @param employee 所调动员工的信息
+//     */
+//    @RabbitListener(queues = "mail.move")
+//    public void handleMoveMail(Employee employee) {
+//
+//    }
 }
