@@ -47,7 +47,7 @@ public class DatabaseService {
             String[] cmd = new String[] {
                     "/bin/sh",
                     "-c",
-                    "/usr/bin/mysqldump -u" + username + " -p" + password + " name > /" + name + "/backup.sql"
+                    "/usr/bin/mysqldump -u" + username + " -p" + password + " " + name + " > /" + name + "/backup.sql"
             };
             Process exec = Runtime.getRuntime().exec(cmd);
             // 判断是否备份成功
@@ -82,7 +82,7 @@ public class DatabaseService {
             String[] cmd = new String[] {
                     "/bin/sh",
                     "-c",
-                    "/usr/bin/mysql -u" + username + " -p" + password + " name < /" + name + "/backup.sql"
+                    "/usr/bin/mysql -u" + username + " -p" + password + " " + name + " < /" + name + "/backup.sql"
             };
             Process exec = Runtime.getRuntime().exec(cmd);
             // 判断是否还原成功
